@@ -1,0 +1,50 @@
+.badge.bg-success-light {
+    background-color: #d4edda; /* Light green */
+    color: #155724;
+}
+
+.badge.bg-danger-light {
+    background-color: #f8d7da; /* Light red */
+    color: #721c24;
+}
+.custom-container {
+    width: 95%;
+}
+/* .primary-btn {
+    background-color: #007bff;
+    color: white; 
+    margin-top: 10px;
+    display: flex;
+    margin-left: auto;
+} */
+
+.primary-btn {
+    margin-top: 10px;
+    margin-left: auto;
+    display: block;
+    width: fit-content; /* Ensures the button doesn’t stretch */
+}
+
+.primary-div {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px; /* Adds spacing between buttons */
+}
+
+
+table {
+    border-collapse: collapse;
+    margin: auto;
+    table-layout: auto;
+    max-width: 100%;
+}
+th:nth-child(5), td:nth-child(5) { 
+    width: 180px; /* Adjust as needed */
+    white-space: nowrap;
+}
+
+.heading {
+    margin-top: 5px;
+    margin-bottom: 20px;
+}
+

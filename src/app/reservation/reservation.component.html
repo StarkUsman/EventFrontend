@@ -1,1 +1,62 @@
-<p>reservation works!</p>
+<div class="container">
+  <!-- Step 1: Select Date -->
+  <div *ngIf="currentStep === 1">
+      <h4>Select a Date</h4>
+      <input type="date" [(ngModel)]="selectedDate" (change)="loadSlots()" class="form-control mb-3" required>
+      <button class="btn btn-primary" (click)="goToNextStep()">Next</button>
+  </div>
+
+  <!-- Step 2: Select Slot -->
+  <div *ngIf="currentStep === 2">
+      <h4>Select a Slot</h4>
+      <div class="row">
+          <div class="col-md-4" *ngFor="let hall of halls">
+              <h5>{{ hall.hall_name }}</h5>
+              <div *ngFor="let slot of getSlotsForHall(hall.hall_id)">
+                  <button 
+                      class="btn btn-outline-primary m-1"
+                      [class.btn-danger]="!slot.isAvailable"
+                      [disabled]="!slot.isAvailable"
+                      (click)="selectSlot(slot)">
+                      {{ slot.start_time }} - {{ slot.end_time }}
+                  </button>
+              </div>
+          </div>
+      </div>
+      <button class="btn btn-secondary" (click)="goToPreviousStep()">Back</button>
+      <button class="btn btn-primary" (click)="goToNextStep()">Next</button>
+  </div>
+
+  <!-- Step 3: Select Menu & Persons -->
+  <div *ngIf="currentStep === 3">
+      <h4>Select Menu & Enter Number of Persons</h4>
+      <div *ngFor="let menu of menus">
+          <label>
+              <input type="checkbox" [checked]="selectedMenus.includes(menu)" (change)="toggleMenuSelection(menu)">
+              {{ menu.menu_name }} - ${{ menu.menu_price }}
+          </label>
+      </div>
+      <input type="number" [(ngModel)]="numberOfPersons" class="form-control mt-3" placeholder="Number of Persons" required>
+      <button class="btn btn-secondary" (click)="goToPreviousStep()">Back</button>
+      <button class="btn btn-primary" (click)="goToNextStep()">Next</button>
+  </div>
+
+  <!-- Step 4: Additional Services & Summary -->
+  <div *ngIf="currentStep === 4">
+      <h4>Additional Services</h4>
+      <div *ngFor="let service of additionalServices">
+          <button class="btn btn-outline-secondary" (click)="addService(service)">
+              Add {{ service.name }}
+          </button>
+      </div>
+      
+      <h5 class="mt-3">Selected Menus:</h5>
+      <div *ngFor="let menu of selectedMenus">
+          {{ menu.menu_name }} 
+          <button class="btn btn-sm btn-danger" (click)="toggleMenuSelection(menu)">×</button>
+      </div>
+
+      <button class="btn btn-secondary" (click)="goToPreviousStep()">Back</button>
+      <button class="btn btn-success" (click)="completeReservation()">Complete Reservation</button>
+  </div>
+</div>

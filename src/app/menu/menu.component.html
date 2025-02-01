@@ -1,0 +1,89 @@
+<div class="row custom-container">
+  <div class="col-sm-12">
+      <button class="btn btn-primary mb-3 primary-btn" (click)="addMenu()">
+          <i class="fa fa-plus"></i> Add Menu
+      </button>
+
+      <div class="card-table">
+          <div class="card-body">
+              <div class="table-responsive">
+                  <table class="table table-center table-hover">
+                      <thead class="thead-light">
+                          <tr>
+                              <th>ID</th>
+                              <th>Menu Name</th>
+                              <th>Menu Name (Urdu)</th>
+                              <th>Description</th>
+                              <th>Price</th>
+                              <th>Active</th>
+                              <th>Actions</th>
+                          </tr>
+                      </thead>
+                      <tbody>
+                          <tr *ngFor="let menu of menu">
+                              <td>{{ menu.menu_id ? menu.menu_id : 'New' }}</td>
+
+                              <!-- Editable Fields -->
+                              <td>
+                                  <input *ngIf="editingMenuId === menu.menu_id || menu === newMenu"
+                                         type="text" [(ngModel)]="menu.menu_name" class="form-control">
+                                  <span *ngIf="editingMenuId !== menu.menu_id && menu !== newMenu">
+                                      {{ menu.menu_name }}
+                                  </span>
+                              </td>
+                              <td>
+                                  <input *ngIf="editingMenuId === menu.menu_id || menu === newMenu"
+                                         type="text" [(ngModel)]="menu.menu_name_urdu" class="form-control">
+                                  <span *ngIf="editingMenuId !== menu.menu_id && menu !== newMenu">
+                                      {{ menu.menu_name_urdu }}
+                                  </span>
+                              </td>
+                              <td>
+                                  <input *ngIf="editingMenuId === menu.menu_id || menu === newMenu"
+                                         type="text" [(ngModel)]="menu.description" class="form-control">
+                                  <span *ngIf="editingMenuId !== menu.menu_id && menu !== newMenu">
+                                      {{ menu.description }}
+                                  </span>
+                              </td>
+                              <td>
+                                  <input *ngIf="editingMenuId === menu.menu_id || menu === newMenu"
+                                         type="number" [(ngModel)]="menu.menu_price" class="form-control">
+                                  <span *ngIf="editingMenuId !== menu.menu_id && menu !== newMenu">
+                                      {{ menu.menu_price }}
+                                  </span>
+                              </td>
+                              <td>
+                                  <input *ngIf="editingMenuId === menu.menu_id || menu === newMenu"
+                                         type="checkbox" [(ngModel)]="menu.isActive" class="form-control">
+                                  <span *ngIf="editingMenuId !== menu.menu_id && menu !== newMenu">
+                                      {{ menu.isActive ? 'Active' : 'Inactive' }}
+                                  </span>
+                              </td>
+
+                              <!-- Actions -->
+                              <td class="align-items-center">
+                                  <button *ngIf="editingMenuId === menu.menu_id || menu === newMenu"
+                                          class="btn btn-success me-2" (click)="saveMenu(menu)">
+                                      <i class="fa fa-check"></i> Save
+                                  </button>
+                                  <button *ngIf="editingMenuId === menu.menu_id || menu === newMenu"
+                                          class="btn btn-secondary me-2" (click)="cancelEdit(menu)">
+                                      <i class="fa fa-times"></i> Cancel
+                                  </button>
+                                  <button *ngIf="editingMenuId !== menu.menu_id && menu !== newMenu"
+                                          class="btn btn-primary me-2" (click)="editMenu(menu)">
+                                      <i class="fa fa-pencil-alt"></i> Edit
+                                  </button>
+                                  <button *ngIf="editingMenuId !== menu.menu_id && menu !== newMenu"
+                                          class="btn btn-danger me-2" (click)="deleteMenu(menu.menu_id)">
+                                      <i class="fa fa-trash"></i> Delete
+                                  </button>
+                              </td>
+                          </tr>
+                      </tbody>
+                  </table>
+              </div>
+          </div>
+      </div>
+  </div>
+</div>
