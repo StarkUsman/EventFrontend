@@ -9,20 +9,21 @@ import { HttpClient } from '@angular/common/http';
 })
 export class EventComponent implements OnInit {
   backendUrl = 'http://localhost:3000';
-  showForm: boolean = false;
-  newEvent = { event_id: null, event_name: '', description: '', hall_id: null };
   events: any[] = [];
   halls: any[] = [];
+  editingEventId: number | null = null;
+  newEvent: any = null; // Stores the event being added inline
 
   constructor(private http: HttpClient) {}
 
   ngOnInit() {
     this.loadEvents();
-    this.loadHalls();  // Fetch halls data for the dropdown
+    this.loadHalls();
   }
 
-  toggleForm() {
-    this.showForm = !this.showForm;
+  getHallName(hallId: number) {
+    const hall = this.halls.find((hall) => hall.hall_id === hallId);
+    return hall ? hall.hall_name : 'Unknown hall';
   }
 
   loadEvents() {
@@ -39,52 +40,63 @@ export class EventComponent implements OnInit {
     );
   }
 
-  saveEvent() {
-    if (!this.newEvent.event_name || !this.newEvent.description || !this.newEvent.hall_id) {
+  addEvent() {
+    if (this.newEvent) return; // Prevent multiple inline rows
+
+    this.newEvent = { event_id: null, event_name: '', description: '', hall_id: null };
+    this.events.push(this.newEvent);
+    this.editingEventId = null; // Ensure no other row is in edit mode
+  }
+
+  editEvent(event: any) {
+    this.editingEventId = event.event_id;
+  }
+
+  saveEvent(event: any) {
+    if (!event.event_name || !event.description || !event.hall_id) {
       alert('Please fill in all fields.');
       return;
     }
 
-    if (this.newEvent.event_id) {
-      // Edit Event
-      this.http.put(`${this.backendUrl}/events/${this.newEvent.event_id}`, this.newEvent).subscribe(
-        (response) => {
+    if (event.event_id) {
+      // Update existing event
+      this.http.put(`${this.backendUrl}/events/${event.event_id}`, event).subscribe(
+        () => {
           alert('Event updated successfully!');
-          this.loadEvents(); // Refresh list
-          this.resetForm(); // Reset form after update
+          this.loadEvents();
         },
         (error) => console.error('Error updating event:', error)
       );
     } else {
-      // Add New Event
-      this.http.post(`${this.backendUrl}/events`, this.newEvent).subscribe(
-        (response) => {
+      // Save new event
+      this.http.post(`${this.backendUrl}/events`, event).subscribe(
+        () => {
           alert('Event added successfully!');
-          this.loadEvents(); // Refresh list
-          this.resetForm(); // Reset form after add
+          this.loadEvents();
         },
         (error) => console.error('Error saving event:', error)
       );
+      this.newEvent = null;
     }
+    this.editingEventId = null;
   }
 
-  editEvent(event: any) {
-    this.newEvent = { ...event };
-    this.showForm = true;
+  cancelEdit(event: any) {
+    if (event.event_id) {
+      this.editingEventId = null; // Reset edit mode
+    } else {
+      this.events.pop(); // Remove unsaved new row
+      this.newEvent = null;
+    }
   }
 
   deleteEvent(eventId: number) {
     this.http.delete(`${this.backendUrl}/events/${eventId}`).subscribe(
-      (response) => {
+      () => {
         alert('Event deleted successfully!');
-        this.loadEvents(); // Refresh list
+        this.loadEvents();
       },
       (error) => console.error('Error deleting event:', error)
     );
-  }
-
-  resetForm() {
-    this.newEvent = { event_id: null, event_name: '', description: '', hall_id: null };
-    this.showForm = false;
   }
 }

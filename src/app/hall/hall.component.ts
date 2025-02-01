@@ -9,8 +9,6 @@ import { HttpClient } from '@angular/common/http';
 })
 export class HallComponent implements OnInit {
   backendUrl = 'http://localhost:3000';
-  showForm: boolean = false;
-  newHall = { hall_id: null, hall_name: '', capacity: null, isAvailable: 0 };
   halls: any[] = [];
 
   constructor(private http: HttpClient) {}
@@ -19,72 +17,73 @@ export class HallComponent implements OnInit {
     this.loadHalls();
   }
 
-  toggleForm() {
-    this.showForm = !this.showForm;
-    if (!this.showForm) {
-      this.resetForm(); 
-    }
-  }
-
-  resetForm() {
-    this.newHall = { hall_id: null, hall_name: '', capacity: null, isAvailable: 0 };
-  }
-
   loadHalls() {
     this.http.get<any[]>(`${this.backendUrl}/halls`).subscribe(
-      (data) => (this.halls = data),
+      (data) => {
+        this.halls = data.map(hall => ({ ...hall, isEditing: false })); // Add editing state
+      },
       (error) => console.error('Error fetching halls:', error)
     );
   }
 
-  saveHall() {
-    if (!this.newHall.hall_name || !this.newHall.capacity || this.newHall.isAvailable === undefined) {
+  addNewHall() {
+    this.halls.push({
+      hall_id: null,
+      hall_name: '',
+      capacity: null,
+      isAvailable: 1,
+      isEditing: true
+    });
+  }
+
+  editHall(hall: any) {
+    hall.isEditing = true;
+  }
+
+  saveHall(hall: any) {
+    if (!hall.hall_name || !hall.capacity) {
       alert('Please fill in all fields.');
       return;
     }
 
-    if (this.newHall.hall_id) {
-      // If hall_id exists, update the existing hall
-      this.updateHall(this.newHall);
+    if (hall.hall_id) {
+      // Update existing hall
+      this.http.put(`${this.backendUrl}/halls/${hall.hall_id}`, hall).subscribe(
+        () => {
+          alert('Hall updated successfully!');
+          hall.isEditing = false;
+        },
+        (error) => console.error('Error updating hall:', error)
+      );
     } else {
-      // If hall_id doesn't exist, add a new hall
-      this.addHall(this.newHall);
+      // Create new hall
+      this.http.post(`${this.backendUrl}/halls`, hall).subscribe(
+        (response: any) => {
+          alert('Hall added successfully!');
+          hall.hall_id = response.hall_id; // Assign new ID
+          hall.isEditing = false;
+        },
+        (error) => console.error('Error saving hall:', error)
+      );
     }
   }
 
-  addHall(hall: any) {
-    this.http.post(`${this.backendUrl}/halls`, hall).subscribe(
-      (response) => {
-        alert('Hall added successfully!');
-        this.loadHalls(); 
-        this.toggleForm(); 
-      },
-      (error) => console.error('Error adding hall:', error)
-    );
+  cancelEdit(hall: any, index: number) {
+    if (!hall.hall_id) {
+      // Remove row if it's a new entry
+      this.halls.splice(index, 1);
+    } else {
+      hall.isEditing = false;
+      this.loadHalls(); // Revert changes by reloading
+    }
   }
 
-  updateHall(hall: any) {
-    this.http.put(`${this.backendUrl}/halls/${hall.hall_id}`, hall).subscribe(
-      (response) => {
-        alert('Hall updated successfully!');
-        this.loadHalls(); 
-        this.toggleForm(); 
-      },
-      (error) => console.error('Error updating hall:', error)
-    );
-  }
-
-  editHall(hall: any) {
-    this.newHall = { ...hall };
-    this.showForm = true; 
-  }
-
-  deleteHall(hallId: number) {
+  deleteHall(hallId: number, index: number) {
     if (confirm('Are you sure you want to delete this hall?')) {
       this.http.delete(`${this.backendUrl}/halls/${hallId}`).subscribe(
-        (response) => {
+        () => {
           alert('Hall deleted successfully!');
-          this.loadHalls(); // Refresh list
+          this.halls.splice(index, 1); // Remove from list
         },
         (error) => console.error('Error deleting hall:', error)
       );

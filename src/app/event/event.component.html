@@ -1,36 +1,9 @@
 <div class="row custom-container">
     <div class="col-sm-12">
-        <!-- Add Event Button -->
-        <button class="btn btn-primary mb-3 primary-btn" (click)="toggleForm()">
+        <button class="btn btn-primary mb-3 primary-btn" (click)="addEvent()">
             <i class="fa fa-plus"></i> Add Event
         </button>
-        
-        <!-- Form for Adding/Editing Event -->
-        <div *ngIf="showForm" class="card p-3 mb-3">
-            <h5 class="heading">{{ newEvent.event_id ? 'Edit Event' : 'Add New Event' }}</h5>
-            <form (submit)="saveEvent()">
-                <div class="mb-3">
-                    <label for="event_name" class="form-label">Event Name</label>
-                    <input type="text" id="event_name" name="event_name" [(ngModel)]="newEvent.event_name" class="form-control" required>
-                </div>
-                <div class="mb-3">
-                    <label for="description" class="form-label">Description</label>
-                    <textarea id="description" name="description" [(ngModel)]="newEvent.description" class="form-control" required></textarea>
-                </div>
-                <div class="mb-3">
-                    <label for="hall" class="form-label">Hall</label>
-                    <select id="hall" name="hall_id" [(ngModel)]="newEvent.hall_id" class="form-control" required>
-                        <option *ngFor="let hall of halls" [value]="hall.hall_id">{{ hall.hall_name }}</option>
-                    </select>
-                </div>
-                <div class="primary-div">
-                    <button type="submit" class="btn btn-success">{{ newEvent.event_id ? 'Update Event' : 'Save Event' }}</button>
-                    <button type="button" class="btn btn-secondary ms-2" (click)="toggleForm()">Cancel</button>
-                </div>
-            </form>
-        </div>
 
-        <!-- Table of Events -->
         <div class="card-table">
             <div class="card-body">
                 <div class="table-responsive">
@@ -45,18 +18,54 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr *ngFor="let event of events; let i = index">
-                                <td>{{ i + 1 }}</td>
-                                <td>{{ event.event_name }}</td>
-                                <td>{{ event.description }}</td>
-                                <td>{{ event.hall_name }}</td>
+                            <tr *ngFor="let event of events">
+                                <td>{{ event.event_id ? event.event_id : 'New' }}</td>
+
+                                <!-- Editable Fields -->
+                                <td>
+                                    <input *ngIf="editingEventId === event.event_id || event === newEvent"
+                                           type="text" [(ngModel)]="event.event_name" class="form-control">
+                                    <span *ngIf="editingEventId !== event.event_id && event !== newEvent">
+                                        {{ event.event_name }}
+                                    </span>
+                                </td>
+                                <td>
+                                    <input *ngIf="editingEventId === event.event_id || event === newEvent"
+                                           type="text" [(ngModel)]="event.description" class="form-control">
+                                    <span *ngIf="editingEventId !== event.event_id && event !== newEvent">
+                                        {{ event.description }}
+                                    </span>
+                                </td>
+                                <td>
+                                    <select *ngIf="editingEventId === event.event_id || event === newEvent"
+                                            [(ngModel)]="event.hall_id" class="form-control">
+                                        <option *ngFor="let hall of halls" [value]="hall.hall_id">
+                                            {{ hall.hall_name }}
+                                        </option>
+                                    </select>
+                                    <span *ngIf="editingEventId !== event.event_id && event !== newEvent">
+                                        {{ getHallName(event.hall_id) }}
+                                    </span>
+                                </td>
+
+                                <!-- Actions -->
                                 <td class="align-items-center">
-                                    <a class="btn btn-primary me-2" (click)="editEvent(event)">
-                                        Edit
-                                    </a>
-                                    <a class="btn btn-danger me-2" (click)="deleteEvent(event.event_id)">
-                                        Delete
-                                    </a>
+                                    <button *ngIf="editingEventId === event.event_id || event === newEvent"
+                                            class="btn btn-success me-2" (click)="saveEvent(event)">
+                                        <i class="fa fa-check"></i> Save
+                                    </button>
+                                    <button *ngIf="editingEventId === event.event_id || event === newEvent"
+                                            class="btn btn-secondary me-2" (click)="cancelEdit(event)">
+                                        <i class="fa fa-times"></i> Cancel
+                                    </button>
+                                    <button *ngIf="editingEventId !== event.event_id && event !== newEvent"
+                                            class="btn btn-primary me-2" (click)="editEvent(event)">
+                                        <i class="fa fa-pencil-alt"></i> Edit
+                                    </button>
+                                    <button *ngIf="editingEventId !== event.event_id && event !== newEvent"
+                                            class="btn btn-danger me-2" (click)="deleteEvent(event.event_id)">
+                                        <i class="fa fa-trash"></i> Delete
+                                    </button>
                                 </td>
                             </tr>
                         </tbody>

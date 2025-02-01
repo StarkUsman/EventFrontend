@@ -7,12 +7,14 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { HallComponent } from './hall/hall.component';
 import { EventComponent } from './event/event.component';
+import { ReservationComponent } from './reservation/reservation.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     HallComponent,
-    EventComponent
+    EventComponent,
+    ReservationComponent
   ],
   imports: [
     BrowserModule,
