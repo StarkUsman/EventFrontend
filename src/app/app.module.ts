@@ -10,6 +10,7 @@ import { EventComponent } from './event/event.component';
 import { ReservationComponent } from './reservation/reservation.component';
 import { MenuComponent } from './menu/menu.component';
 import { SidebarComponent } from './sidebar/sidebar.component';
+import { AdditionalComponent } from './additional/additional.component';
 
 @NgModule({
   declarations: [
@@ -18,7 +19,8 @@ import { SidebarComponent } from './sidebar/sidebar.component';
     EventComponent,
     ReservationComponent,
     MenuComponent,
-    SidebarComponent
+    SidebarComponent,
+    AdditionalComponent
   ],
   imports: [
     BrowserModule,

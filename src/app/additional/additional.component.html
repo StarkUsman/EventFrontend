@@ -1,0 +1,102 @@
+<div class="row custom-container">
+    <div class="col-sm-12">
+      <!-- Add Service Button -->
+      <button class="btn btn-primary mb-3 primary-btn" (click)="addNewService()" style="float: right;">
+        <i class="fa fa-plus"></i> Add Service
+      </button>
+  
+      <div class="card-table">
+        <div class="card-body">
+          <div class="table-responsive">
+            <table class="table table-center table-hover">
+              <thead class="thead-light">
+                <tr>
+                  <th>Service Name</th>
+                  <th>Description</th>
+                  <th>Price</th>
+                  <th>Category</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <!-- Existing Additional Services -->
+                <tr *ngFor="let service of additionalServices">
+                  <td>
+                    <input *ngIf="editingServiceId === service.additional_service_id" 
+                           type="text" [(ngModel)]="service.additional_service_name" class="form-control">
+                    <span *ngIf="editingServiceId !== service.additional_service_id">
+                      {{ service.additional_service_name }}
+                    </span>
+                  </td>
+                  <td>
+                    <textarea *ngIf="editingServiceId === service.additional_service_id" 
+                              [(ngModel)]="service.description" class="form-control"></textarea>
+                    <span *ngIf="editingServiceId !== service.additional_service_id">
+                      {{ service.description }}
+                    </span>
+                  </td>
+                  <td>
+                    <input *ngIf="editingServiceId === service.additional_service_id" 
+                           type="number" [(ngModel)]="service.price" class="form-control">
+                    <span *ngIf="editingServiceId !== service.additional_service_id">
+                      {{ service.price | currency }}
+                    </span>
+                  </td>
+                  <td>
+                    <input *ngIf="editingServiceId === service.additional_service_id" 
+                           type="text" [(ngModel)]="service.category" class="form-control">
+                    <span *ngIf="editingServiceId !== service.additional_service_id">
+                      {{ service.category }}
+                    </span>
+                  </td>
+                  <td class="align-items-center">
+                    <button *ngIf="editingServiceId === service.additional_service_id"
+                            class="btn btn-success me-2" (click)="saveService(service)">
+                      <i class="fa fa-check"></i> Save
+                    </button>
+                    <button *ngIf="editingServiceId === service.additional_service_id"
+                            class="btn btn-secondary me-2" (click)="cancelEdit()">
+                      <i class="fa fa-times"></i> Cancel
+                    </button>
+                    <button *ngIf="editingServiceId !== service.additional_service_id"
+                            class="btn btn-primary me-2" (click)="editService(service)">
+                      <i class="fa fa-pencil-alt"></i> Edit
+                    </button>
+                    <button *ngIf="editingServiceId !== service.additional_service_id"
+                            class="btn btn-danger me-2" (click)="deleteService(service)">
+                      <i class="fa fa-trash-alt"></i> Delete
+                    </button>
+                  </td>
+                </tr>
+  
+                <!-- Blank Row for New Service -->
+                <tr *ngIf="editingServiceId === -1">
+                  <td>
+                    <input type="text" [(ngModel)]="newService.additional_service_name" class="form-control" placeholder="Service Name">
+                  </td>
+                  <td>
+                    <textarea [(ngModel)]="newService.description" class="form-control" placeholder="Description"></textarea>
+                  </td>
+                  <td>
+                    <input type="number" [(ngModel)]="newService.price" class="form-control" placeholder="Price">
+                  </td>
+                  <td>
+                    <input type="text" [(ngModel)]="newService.category" class="form-control" placeholder="Category">
+                  </td>
+                  <td>
+                    <button class="btn btn-success me-2" (click)="saveService(newService)">
+                      <i class="fa fa-check"></i> Save
+                    </button>
+                    <button class="btn btn-secondary me-2" (click)="cancelEdit()">
+                      <i class="fa fa-times"></i> Cancel
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
