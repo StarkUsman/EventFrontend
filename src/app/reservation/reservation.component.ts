@@ -4,145 +4,110 @@ import { HttpClient } from '@angular/common/http';
 @Component({
   selector: 'app-reservation',
   standalone: false,
-
+  
   templateUrl: './reservation.component.html',
   styleUrls: ['./reservation.component.css']
 })
 export class ReservationComponent implements OnInit {
-  backendUrl = 'http://localhost:3000';
-  currentStep = 1; // Tracks which step the user is on
-  reservations: any[] = [];
-  halls: any[] = [];
-  slots: any[] = [];
-  menus: any[] = [];
-  additionalServices: any[] = [];
-  selectedDate: string = '';
-  selectedSlot: any = null;
-  selectedMenus: any[] = [];
-  numberOfPersons: number | null = null;
-  selectedServices: any[] = [];
+  days: string[] = [];
+  startDate: number = 15; // Starting day number, can be dynamic
+  stage: number = 1; // Tracks the current stage of the reservation process
+  reservation: any = {
+    reservation_name: '',
+    reserver_name: '',
+    description: '',
+    date: '',
+    selected_slot: null,
+    selectedMenu: null,  // Changed to track only one selected menu
+    menus: [],
+    num_of_persons: 0,
+    additional_services: []
+  };
+  availableMenus: any[] = []; // This will hold the fetched menus
+  availableSlots: any[] = []; // Holds the selected slots for stage 2
 
   constructor(private http: HttpClient) {}
 
   ngOnInit() {
-    this.loadReservations();
-    this.loadHalls();
     this.loadMenus();
-    this.loadAdditionalServices();
   }
 
-  loadReservations() {
-    this.http.get<any[]>(`${this.backendUrl}/bookings`).subscribe(
-      (data) => (this.reservations = data),
-      (error) => console.error('Error fetching reservations:', error)
-    );
-  }
-
-  loadHalls() {
-    this.http.get<any[]>(`${this.backendUrl}/halls`).subscribe(
-      (data) => (this.halls = data),
-      (error) => console.error('Error fetching halls:', error)
-    );
-  }
-
-  loadSlots() {
-    if (this.selectedDate) {
-      this.http.get<any[]>(`${this.backendUrl}/slots?date=${this.selectedDate}`).subscribe(
-        (data) => (this.slots = data),
-        (error) => console.error('Error fetching slots:', error)
-      );
+  initDays(date: any) {
+    console.log('date:', date);
+    if (!date) {
+      console.error("Invalid date passed to initDays:", date);
+      return;
+    }
+  
+    // Convert string to Date if necessary
+    if (!(date instanceof Date)) {
+      date = new Date(date);
+    }
+  
+    if (isNaN(date.getTime())) {
+      console.error("Invalid date format:", date);
+      return;
+    }
+  
+    this.days = [];
+    let tempDate = new Date(date.getTime() - 3 * 24 * 60 * 60 * 1000);
+  
+    for (let i = 0; i < 7; i++) {
+      const day = new Date(tempDate.getTime());
+      day.setDate(tempDate.getDate() + i);
+      this.days.push(day.toDateString());
     }
   }
 
   loadMenus() {
-    this.http.get<any[]>(`${this.backendUrl}/menus`).subscribe(
-      (data) => (this.menus = data),
-      (error) => console.error('Error fetching menus:', error)
-    );
+    // Make an API call to fetch menus (replace with real endpoint)
+    this.http.get<any[]>('http://localhost:3000/menus').subscribe(data => {
+      this.availableMenus = data;
+    });
   }
 
-  loadAdditionalServices() {
-    this.http.get<any[]>(`${this.backendUrl}/additional-services`).subscribe(
-      (data) => (this.additionalServices = data),
-      (error) => console.error('Error fetching additional services:', error)
-    );
+  nextStage() {
+    if (this.stage === 1 && this.isStage1Valid()) {
+      this.initDays(this.reservation.date);
+      this.stage++;
+    } else if (this.stage === 2 && this.isStage2Valid()) {
+      this.stage++;
+    } else if (this.stage === 3 && this.isStage3Valid()) {
+      this.stage++;
+    }
   }
 
-  getSlotsForHall(hallId: number) {
-    return this.slots ? this.slots.filter(slot => slot.hall_id === hallId) : [];
+  prevStage() {
+    if (this.stage > 1) {
+      this.stage--;
+    }
+  }
+
+  isStage1Valid(): boolean {
+    // Ensure reservation name, reserver name, description, and date are filled
+    return this.reservation.reservation_name && this.reservation.reserver_name && this.reservation.description && this.reservation.date;
+  }
+
+  isStage2Valid(): boolean {
+    return this.reservation.selected_slot !== null; // Ensure a slot is selected
+  }
+
+  isStage3Valid(): boolean {
+    return this.reservation.selectedMenu !== null && this.reservation.num_of_persons > 0; // Ensure a menu is selected
+  }
+
+  saveReservation() {
+    // Here, you would make an API call to save the reservation data
+    console.log('Saving Reservation:', this.reservation);
+    alert('Reservation saved!');
   }
 
   selectSlot(slot: any) {
-    if (slot.isAvailable) {
-      this.selectedSlot = slot;
-    }
+    this.reservation.selected_slot = slot;
   }
 
-  toggleMenuSelection(menu: any) {
-    const index = this.selectedMenus.findIndex(m => m.menu_id === menu.menu_id);
-    if (index > -1) {
-      this.selectedMenus.splice(index, 1); // Deselect menu
-    } else {
-      this.selectedMenus.push(menu); // Select menu
-    }
-  }
-
-  addService(service: any) {
-    if (!this.selectedServices.includes(service)) {
-      this.selectedServices.push(service);
-    }
-  }
-
-  removeService(service: any) {
-    this.selectedServices = this.selectedServices.filter(s => s !== service);
-  }
-
-  goToNextStep() {
-    if (this.currentStep === 1 && !this.selectedDate) {
-      alert('Please select a date.');
-      return;
-    }
-    if (this.currentStep === 2 && !this.selectedSlot) {
-      alert('Please select a slot.');
-      return;
-    }
-    if (this.currentStep === 3 && (!this.selectedMenus.length || !this.numberOfPersons)) {
-      alert('Please select at least one menu and enter the number of persons.');
-      return;
-    }
-    this.currentStep++;
-  }
-
-  goToPreviousStep() {
-    this.currentStep--;
-  }
-
-  completeReservation() {
-    const reservationData = {
-      date: this.selectedDate,
-      slot_id: this.selectedSlot?.slot_id,
-      hall_id: this.selectedSlot?.hall_id,
-      menus: this.selectedMenus.map(menu => menu.menu_id),
-      numberOfPersons: this.numberOfPersons,
-      additionalServices: this.selectedServices.map(service => service.additional_service_id)
-    };
-
-    this.http.post(`${this.backendUrl}/reservations`, reservationData).subscribe(
-      () => {
-        alert('Reservation completed successfully!');
-        this.loadReservations();
-        this.resetForm();
-      },
-      (error) => console.error('Error making reservation:', error)
-    );
-  }
-
-  resetForm() {
-    this.currentStep = 1;
-    this.selectedDate = '';
-    this.selectedSlot = null;
-    this.selectedMenus = [];
-    this.numberOfPersons = null;
-    this.selectedServices = [];
+  selectMenu(menu: any) {
+    // Ensure only one menu is selected, directly assign it to selectedMenu
+    this.reservation.selectedMenu = menu;
   }
 }

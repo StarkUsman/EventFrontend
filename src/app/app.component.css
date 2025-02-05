@@ -138,3 +138,8 @@ table {
 .table-dark.table-bordered {
   border: 0;
 }
+
+.content {
+  margin-left: 250px; /* Adjusts for sidebar width */
+  padding: 20px;
+}

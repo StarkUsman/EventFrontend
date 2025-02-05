@@ -1,0 +1,132 @@
+/* Calendar Styles */
+:root {
+  --numHours: 3; /* Adjust based on available halls */
+  --timeHeight: 200px; /* Adjust for spacing */
+  --calBgColor: #fff1f8;
+  --eventBorderColor: #f2d3d8;
+}
+
+body {
+  font-family: system-ui, sans-serif;
+}
+
+.calendar {
+  display: grid;
+  gap: 10px;
+  grid-template-columns: auto 1fr;
+  margin: 2rem;
+}
+
+.timeline {
+  display: grid;
+  grid-template-rows: repeat(var(--numHours), var(--timeHeight));
+  font-weight: bold;
+  padding-right: 10px;
+  align-items: center;
+}
+
+.days {
+  display: grid;
+  grid-column: 2;
+  gap: 5px;
+  grid-template-columns: repeat(7, 1fr); /* Ensures 7 days stay in a single row */
+  overflow-x: auto; /* Adds horizontal scrolling if needed */
+  white-space: nowrap;
+}
+
+
+.events {
+  display: grid;
+  grid-template-rows: repeat(var(--numHours), var(--timeHeight));
+  border-radius: 5px;
+  background: var(--calBgColor);
+  padding: 10px;
+}
+
+.event {
+  border: 1px solid var(--eventBorderColor);
+  border-radius: 5px;
+  padding: 10px;
+  margin: 5px 0;
+  background: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.date {
+  display: flex;
+  gap: 0.5em;
+  align-items: center;
+}
+
+.date-num {
+  font-size: 2rem;
+  font-weight: 600;
+}
+
+.date-day {
+  font-size: 1.2rem;
+  font-weight: 100;
+}
+
+.radio-container {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: center;
+  width: 100%;
+}
+
+input[type="radio"] {
+  appearance: none;
+  position: absolute;
+}
+
+label {
+  display: block;
+  padding: 12px;
+  width: 120px;
+  text-align: center;
+  background: #ddd;
+  border-radius: 6px;
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: all 0.3s ease-in-out;
+  font-weight: bold;
+}
+
+input[type="radio"]:checked + label {
+  background: #007bff;
+  color: white;
+  border-color: #0056b3;
+}
+
+label:hover {
+  background: #ccc;
+}
+
+/* Other Component Styles */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+h3 {
+  text-align: center;
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.card {
+  margin-bottom: 15px;
+}
+
+.btn-outline-primary {
+  margin-top: 10px;
+}
+
+.btn-secondary, .btn-primary {
+  margin-top: 20px;
+}

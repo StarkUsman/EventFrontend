@@ -1,62 +1,113 @@
-<div class="container">
-  <!-- Step 1: Select Date -->
-  <div *ngIf="currentStep === 1">
-      <h4>Select a Date</h4>
-      <input type="date" [(ngModel)]="selectedDate" (change)="loadSlots()" class="form-control mb-3" required>
-      <button class="btn btn-primary" (click)="goToNextStep()">Next</button>
+<div class="container mt-5">
+  <div *ngIf="stage === 1">
+    <h3 class="mb-4">Stage 1: Reservation Details</h3>
+    <form>
+      <div class="mb-3">
+        <label for="reservationName" class="form-label">Reservation Name</label>
+        <input type="text" id="reservationName" class="form-control" [(ngModel)]="reservation.reservation_name" name="reservation_name">
+      </div>
+      <div class="mb-3">
+        <label for="reserverName" class="form-label">Reserver Name</label>
+        <input type="text" id="reserverName" class="form-control" [(ngModel)]="reservation.reserver_name" name="reserver_name">
+      </div>
+      <div class="mb-3">
+        <label for="description" class="form-label">Description</label>
+        <input type="text" id="description" class="form-control" [(ngModel)]="reservation.description" name="description">
+      </div>
+      <div class="mb-3">
+        <label for="date" class="form-label">Date</label>
+        <input type="date" id="date" class="form-control" [(ngModel)]="reservation.date" name="date">
+      </div>
+    </form>
+    <button class="btn btn-primary" (click)="nextStage()" [disabled]="!isStage1Valid()">Next <i class="fa fa-arrow-right"></i></button>
   </div>
 
-  <!-- Step 2: Select Slot -->
-  <div *ngIf="currentStep === 2">
-      <h4>Select a Slot</h4>
-      <div class="row">
-          <div class="col-md-4" *ngFor="let hall of halls">
-              <h5>{{ hall.hall_name }}</h5>
-              <div *ngFor="let slot of getSlotsForHall(hall.hall_id)">
-                  <button 
-                      class="btn btn-outline-primary m-1"
-                      [class.btn-danger]="!slot.isAvailable"
-                      [disabled]="!slot.isAvailable"
-                      (click)="selectSlot(slot)">
-                      {{ slot.start_time }} - {{ slot.end_time }}
-                  </button>
-              </div>
+  <div *ngIf="stage === 2">
+    <h3 class="mb-4">Stage 2: Select a Slot</h3>
+    <div class="calendar">
+      <div class="timeline">
+        <div class="time-marker">Normal</div>
+        <div class="time-marker">Luxury</div>
+        <div class="time-marker">Premium</div>
+      </div>
+      <div class="days">
+        <div *ngFor="let day of days; let i = index" class="day">
+          <div class="date">
+            <p class="date-day">{{ day }}</p>
           </div>
+          <div class="events">
+            <div class="event" *ngFor="let slotType of ['Normal', 'Luxury', 'Premium']">
+              <div class="radio-container">
+                <input type="radio" name="selected_slot" id="event-{{ slotType.toLowerCase() }}-{{ i }}-1" (change)="selectSlot({ day: day, type: slotType, slot: 1 })">
+                <label for="event-{{ slotType.toLowerCase() }}-{{ i }}-1">Slot 1</label>
+                <input type="radio" name="selected_slot" id="event-{{ slotType.toLowerCase() }}-{{ i }}-2" (change)="selectSlot({ day: day, type: slotType, slot: 2 })">
+                <label for="event-{{ slotType.toLowerCase() }}-{{ i }}-2">Slot 2</label>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
-      <button class="btn btn-secondary" (click)="goToPreviousStep()">Back</button>
-      <button class="btn btn-primary" (click)="goToNextStep()">Next</button>
+    </div>
+    <button class="btn btn-secondary" (click)="prevStage()"><i class="fa fa-arrow-left"></i> Back</button>
+    <button class="btn btn-primary" (click)="nextStage()" [disabled]="!isStage2Valid()">Next <i class="fa fa-arrow-right"></i></button>
   </div>
 
-  <!-- Step 3: Select Menu & Persons -->
-  <div *ngIf="currentStep === 3">
-      <h4>Select Menu & Enter Number of Persons</h4>
-      <div *ngFor="let menu of menus">
-          <label>
-              <input type="checkbox" [checked]="selectedMenus.includes(menu)" (change)="toggleMenuSelection(menu)">
-              {{ menu.menu_name }} - ${{ menu.menu_price }}
-          </label>
+  <!-- Stage 3: Select Menus -->
+  <div *ngIf="stage === 3">
+    <h3 class="mb-4">Stage 3: Select Menus</h3>
+    <div class="row">
+      <div class="col-md-4" *ngFor="let menu of availableMenus">
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title">{{ menu.menu_name }}</h5>
+            <!-- Show price and description under menu name -->
+            <p class="card-text"><strong>Description:</strong> {{ menu.description }}</p>
+            <p class="card-text"><strong>Price:</strong> {{ menu.menu_price | currency }}</p>
+            <ul>
+              <li *ngFor="let item of menu.menu_items">{{ item.item_name }} - {{ item.price | currency }}</li>
+            </ul>
+            
+            <!-- Radio button for menu selection -->
+            <input type="radio" 
+                  id="menu-{{menu.menu_id}}" 
+                  name="selectedMenu" 
+                  [value]="menu" 
+                  [(ngModel)]="reservation.selectedMenu" 
+                  (change)="selectMenu(menu)" />
+            <label for="menu-{{menu.menu_id}}" class="btn btn-outline-primary">
+              <i class="fa fa-check"></i> Select
+            </label>
+          </div>
+        </div>
       </div>
-      <input type="number" [(ngModel)]="numberOfPersons" class="form-control mt-3" placeholder="Number of Persons" required>
-      <button class="btn btn-secondary" (click)="goToPreviousStep()">Back</button>
-      <button class="btn btn-primary" (click)="goToNextStep()">Next</button>
-  </div>
+    </div>
+    
+    <div class="mb-3">
+      <label for="numPersons" class="form-label">Number of Persons</label>
+      <input type="number" id="numPersons" class="form-control" [(ngModel)]="reservation.num_of_persons" name="num_of_persons" min="1">
+    </div>
 
-  <!-- Step 4: Additional Services & Summary -->
-  <div *ngIf="currentStep === 4">
-      <h4>Additional Services</h4>
-      <div *ngFor="let service of additionalServices">
-          <button class="btn btn-outline-secondary" (click)="addService(service)">
-              Add {{ service.name }}
+    <button class="btn btn-secondary" (click)="prevStage()"><i class="fa fa-arrow-left"></i> Back</button>
+    <button class="btn btn-primary" (click)="nextStage()" [disabled]="!isStage3Valid()">Next <i class="fa fa-arrow-right"></i></button>
+  </div>   
+
+  <div *ngIf="stage === 4">
+    <h3 class="mb-4">Stage 4: Final Review</h3>
+    <div *ngFor="let menu of reservation.menus">
+      <div class="card mb-3">
+        <div class="card-body">
+          <h5 class="card-title">{{ menu.menu_name }}</h5>
+          <button class="btn btn-danger btn-sm" (click)="selectMenu(menu)">
+            <i class="fa fa-trash"></i> Remove
           </button>
+        </div>
       </div>
-      
-      <h5 class="mt-3">Selected Menus:</h5>
-      <div *ngFor="let menu of selectedMenus">
-          {{ menu.menu_name }} 
-          <button class="btn btn-sm btn-danger" (click)="toggleMenuSelection(menu)">×</button>
-      </div>
-
-      <button class="btn btn-secondary" (click)="goToPreviousStep()">Back</button>
-      <button class="btn btn-success" (click)="completeReservation()">Complete Reservation</button>
+    </div>
+    <div class="mb-3">
+      <label for="additionalServices" class="form-label">Additional Services</label>
+      <input type="text" id="additionalServices" class="form-control" [(ngModel)]="reservation.additional_services" name="additional_services">
+    </div>
+    <button class="btn btn-secondary" (click)="prevStage()"><i class="fa fa-arrow-left"></i> Back</button>
+    <button class="btn btn-success" (click)="saveReservation()">Finish <i class="fa fa-check"></i></button>
   </div>
 </div>

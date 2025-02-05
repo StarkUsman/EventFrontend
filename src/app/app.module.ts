@@ -9,6 +9,7 @@ import { HallComponent } from './hall/hall.component';
 import { EventComponent } from './event/event.component';
 import { ReservationComponent } from './reservation/reservation.component';
 import { MenuComponent } from './menu/menu.component';
+import { SidebarComponent } from './sidebar/sidebar.component';
 
 @NgModule({
   declarations: [
@@ -16,7 +17,8 @@ import { MenuComponent } from './menu/menu.component';
     HallComponent,
     EventComponent,
     ReservationComponent,
-    MenuComponent
+    MenuComponent,
+    SidebarComponent
   ],
   imports: [
     BrowserModule,
