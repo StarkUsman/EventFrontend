@@ -52,7 +52,8 @@
     <button class="btn btn-primary" (click)="nextStage()" [disabled]="!isStage2Valid()">Next <i class="fa fa-arrow-right"></i></button>
   </div>
 
-  <!-- Stage 3: Select Menus -->
+  <div class="container mt-5">
+    <!-- Stage 3: Select Menus -->
   <div *ngIf="stage === 3">
     <h3 class="mb-4">Stage 3: Select Menus</h3>
     <div class="row">
@@ -60,28 +61,30 @@
         <div class="card">
           <div class="card-body">
             <h5 class="card-title">{{ menu.menu_name }}</h5>
-            <!-- Show price and description under menu name -->
             <p class="card-text"><strong>Description:</strong> {{ menu.description }}</p>
             <p class="card-text"><strong>Price:</strong> {{ menu.menu_price | currency }}</p>
-            <ul>
-              <li *ngFor="let item of menu.menu_items">{{ item.item_name }} - {{ item.price | currency }}</li>
-            </ul>
             
+            <ul>
+              <li *ngFor="let item of menu.menu_items">
+                <span>{{ item.item_name }} - {{ item.price | currency }}</span>
+              </li>
+            </ul>
+
             <!-- Radio button for menu selection -->
             <input type="radio" 
-                  id="menu-{{menu.menu_id}}" 
+                  id="menu-{{ menu.menu_id }}" 
                   name="selectedMenu" 
                   [value]="menu" 
                   [(ngModel)]="reservation.selectedMenu" 
                   (change)="selectMenu(menu)" />
-            <label for="menu-{{menu.menu_id}}" class="btn btn-outline-primary">
+            <label for="menu-{{ menu.menu_id }}" class="btn btn-outline-primary">
               <i class="fa fa-check"></i> Select
             </label>
           </div>
         </div>
       </div>
     </div>
-    
+
     <div class="mb-3">
       <label for="numPersons" class="form-label">Number of Persons</label>
       <input type="number" id="numPersons" class="form-control" [(ngModel)]="reservation.num_of_persons" name="num_of_persons" min="1">
@@ -90,24 +93,66 @@
     <button class="btn btn-secondary" (click)="prevStage()"><i class="fa fa-arrow-left"></i> Back</button>
     <button class="btn btn-primary" (click)="nextStage()" [disabled]="!isStage3Valid()">Next <i class="fa fa-arrow-right"></i></button>
   </div>   
-
-  <div *ngIf="stage === 4">
-    <h3 class="mb-4">Stage 4: Final Review</h3>
-    <div *ngFor="let menu of reservation.menus">
-      <div class="card mb-3">
-        <div class="card-body">
-          <h5 class="card-title">{{ menu.menu_name }}</h5>
-          <button class="btn btn-danger btn-sm" (click)="selectMenu(menu)">
-            <i class="fa fa-trash"></i> Remove
-          </button>
+  
+    <!-- Stage 4: Final Review -->
+    <div *ngIf="stage === 4">
+      <h3 class="mb-4">Stage 4: Final Review</h3>
+      
+      <!-- Display Selected Menu -->
+      <div *ngIf="reservation.selectedMenu">
+        <div class="card mb-3">
+          <div class="card-body">
+            <h5 class="card-title">{{ reservation.selectedMenu.menu_name }}</h5>
+            <p><strong>Price:</strong> {{ reservation.selectedMenu.menu_price | currency }}</p>
+    
+            <!-- Displaying selected menu items in a gallery grid -->
+            <div class="menu-items-gallery">
+              <div *ngFor="let item of menuItems" class="menu-item-card">
+                <img [src]="item.imageUrl || 'default-image.jpg'" alt="{{ item.item_name }}" class="menu-item-img">
+                <div class="menu-item-details">
+                  <label class="menuItemLabel" for="item-{{ item.menu_item_id }}">
+                    {{ item.item_name }}
+                  </label>
+                  <!-- Remove button for each selected item -->
+                  <button *ngIf="item.selected" class="btn btn-danger btn-sm" (click)="removeMenuItem(item)">
+                    <i class="fa fa-trash"></i> Remove Item
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
-    </div>
-    <div class="mb-3">
-      <label for="additionalServices" class="form-label">Additional Services</label>
-      <input type="text" id="additionalServices" class="form-control" [(ngModel)]="reservation.additional_services" name="additional_services">
-    </div>
-    <button class="btn btn-secondary" (click)="prevStage()"><i class="fa fa-arrow-left"></i> Back</button>
-    <button class="btn btn-success" (click)="saveReservation()">Finish <i class="fa fa-check"></i></button>
-  </div>
-</div>
+    
+      <!-- Display Additional Services Input -->
+      <div class="mb-3">
+        <label for="additionalServices" class="form-label">Additional Services</label>
+        <input type="text"
+               id="additionalServices"
+               class="form-control"
+               [(ngModel)]="reservation.additional_services"
+               name="additional_services">
+      </div>
+    
+      <!-- Calculate and Display Total Price -->
+      <div class="mb-3">
+        <h5>Total Price</h5>
+        <p><strong>Menu Price:</strong> {{ reservation.selectedMenu.menu_price | currency }}</p>
+        <p><strong>Selected Items:</strong> 
+          <span *ngFor="let item of menuItems; let isLast = last">
+            {{ item.item_name }} - {{ item.price | currency }}<span *ngIf="!isLast">, </span>
+          </span>
+        </p>
+    
+        <p><strong>Additional Services:</strong> {{ reservation.additional_services | currency }}</p>
+        <h4><strong>Grand Total: 9999</strong></h4>
+      </div>
+    
+      <!-- Navigation Buttons -->
+      <button class="btn btn-secondary" (click)="prevStage()">
+        <i class="fa fa-arrow-left"></i> Back
+      </button>
+      <button class="btn btn-success" (click)="saveReservation()">
+        Finish <i class="fa fa-check"></i>
+      </button>
+    </div>    

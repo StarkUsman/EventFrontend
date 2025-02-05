@@ -4,7 +4,6 @@ import { HttpClient } from '@angular/common/http';
 @Component({
   selector: 'app-reservation',
   standalone: false,
-  
   templateUrl: './reservation.component.html',
   styleUrls: ['./reservation.component.css']
 })
@@ -18,12 +17,14 @@ export class ReservationComponent implements OnInit {
     description: '',
     date: '',
     selected_slot: null,
-    selectedMenu: null,  // Changed to track only one selected menu
-    menus: [],
+    menus: [],  // Updated to contain menu information
     num_of_persons: 0,
-    additional_services: []
+    additional_services: [],
+    selectedMenu: null, // Track selected menu for stage 3
+    selected_items: [] // Track selected menu items for stage 4
   };
   availableMenus: any[] = []; // This will hold the fetched menus
+  menuItems: any[] = []; // Holds the selected menu items
   availableSlots: any[] = []; // Holds the selected slots for stage 2
 
   constructor(private http: HttpClient) {}
@@ -33,25 +34,24 @@ export class ReservationComponent implements OnInit {
   }
 
   initDays(date: any) {
-    console.log('date:', date);
     if (!date) {
       console.error("Invalid date passed to initDays:", date);
       return;
     }
-  
+
     // Convert string to Date if necessary
     if (!(date instanceof Date)) {
       date = new Date(date);
     }
-  
+
     if (isNaN(date.getTime())) {
       console.error("Invalid date format:", date);
       return;
     }
-  
+
     this.days = [];
     let tempDate = new Date(date.getTime() - 3 * 24 * 60 * 60 * 1000);
-  
+
     for (let i = 0; i < 7; i++) {
       const day = new Date(tempDate.getTime());
       day.setDate(tempDate.getDate() + i);
@@ -60,10 +60,23 @@ export class ReservationComponent implements OnInit {
   }
 
   loadMenus() {
-    // Make an API call to fetch menus (replace with real endpoint)
+    // Fetch menus from API (replace with your real endpoint)
     this.http.get<any[]>('http://localhost:3000/menus').subscribe(data => {
       this.availableMenus = data;
     });
+  }
+
+  loadMenuItems(menuItemIds: number[]) {
+    this.menuItems = []; // Reset the menu items before loading
+    menuItemIds.forEach((id) => {
+      this.http.get<any>(`http://localhost:3000/menu-items/${id}`).subscribe(item => {
+        item.selected = true;
+        this.menuItems.push(item);
+        console.log('Loaded menu items:', this.menuItems);
+      });
+    });
+    
+    console.log('Loading menu items:', this.menuItems);
   }
 
   nextStage() {
@@ -74,6 +87,7 @@ export class ReservationComponent implements OnInit {
       this.stage++;
     } else if (this.stage === 3 && this.isStage3Valid()) {
       this.stage++;
+      this.loadMenuItems(this.reservation.selectedMenu.menu_item_ids); // Load menu items based on selected menu
     }
   }
 
@@ -84,20 +98,19 @@ export class ReservationComponent implements OnInit {
   }
 
   isStage1Valid(): boolean {
-    // Ensure reservation name, reserver name, description, and date are filled
     return this.reservation.reservation_name && this.reservation.reserver_name && this.reservation.description && this.reservation.date;
   }
 
   isStage2Valid(): boolean {
-    return this.reservation.selected_slot !== null; // Ensure a slot is selected
+    return this.reservation.selected_slot !== null;
   }
 
   isStage3Valid(): boolean {
-    return this.reservation.selectedMenu !== null && this.reservation.num_of_persons > 0; // Ensure a menu is selected
+    // Ensure that a menu is selected and the number of persons is greater than 0
+    return this.reservation.selectedMenu !== null && this.reservation.num_of_persons > 0;
   }
 
   saveReservation() {
-    // Here, you would make an API call to save the reservation data
     console.log('Saving Reservation:', this.reservation);
     alert('Reservation saved!');
   }
@@ -107,7 +120,28 @@ export class ReservationComponent implements OnInit {
   }
 
   selectMenu(menu: any) {
-    // Ensure only one menu is selected, directly assign it to selectedMenu
-    this.reservation.selectedMenu = menu;
+    this.reservation.selectedMenu = menu; // Store selected menu
+    // Trigger menu item load based on selected menu
+    this.loadMenuItems(menu.menu_item_ids);
   }
+
+  updateMenuSelection(item: any) {
+    if (item.selected) {
+      this.reservation.selected_items.push(item); // Add item to selected items if checked
+    } else {
+      const index = this.reservation.selected_items.indexOf(item);
+      if (index !== -1) {
+        this.reservation.selected_items.splice(index, 1); // Remove item from selected items if unchecked
+      }
+    }
+  }
+
+removeMenuItem(item: any) {
+  item.selected = false; // Unselect the item
+  const index = this.menuItems.indexOf(item);
+  if (index !== -1) {
+    this.menuItems.splice(index, 1); // Remove item from menuItems array
+  }
+}
+
 }
