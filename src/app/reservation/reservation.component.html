@@ -124,14 +124,23 @@
         </div>
       </div>
     
-      <!-- Display Additional Services Input -->
+      <!-- Display Additional Services Checklist -->
       <div class="mb-3">
-        <label for="additionalServices" class="form-label">Additional Services</label>
-        <input type="text"
-               id="additionalServices"
-               class="form-control"
-               [(ngModel)]="reservation.additional_services"
-               name="additional_services">
+        <h5 for="additionalServices" class="card-title">Additional Services</h5>
+        <div class="menu-items-gallery">
+          <div class="menu-item-card" *ngFor="let service of additionalServices">
+            <div class="form-check">
+              <input type="checkbox"
+                     id="service-{{ service.additional_service_id }}"
+                     class="form-check-input"
+                     [(ngModel)]="service.selected"
+                     (change)="updateAdditionalServices(service)">
+              <label class="form-check-label menuItemLabel" for="service-{{ service.additional_service_id }}">
+                {{ service.additional_service_name }} - {{ service.price | currency }}
+              </label>
+            </div>
+          </div>
+        </div>
       </div>
     
       <!-- Calculate and Display Total Price -->
@@ -139,13 +148,17 @@
         <h5>Total Price</h5>
         <p><strong>Menu Price:</strong> {{ reservation.selectedMenu.menu_price | currency }}</p>
         <p><strong>Selected Items:</strong> 
-          <span *ngFor="let item of menuItems; let isLast = last">
+          <span *ngFor="let item of reservation.selected_items; let isLast = last">
             {{ item.item_name }} - {{ item.price | currency }}<span *ngIf="!isLast">, </span>
           </span>
         </p>
     
-        <p><strong>Additional Services:</strong> {{ reservation.additional_services | currency }}</p>
-        <h4><strong>Grand Total: 9999</strong></h4>
+        <p><strong>Additional Services:</strong> 
+          <span *ngFor="let service of reservation.additional_services; let isLast = last">
+            {{ service.additional_service_name }} - {{ service.price | currency }}<span *ngIf="!isLast">, </span>
+          </span>
+        </p>
+        <h4><strong>Grand Total: {{ getGrandTotal() | currency }}</strong></h4>
       </div>
     
       <!-- Navigation Buttons -->

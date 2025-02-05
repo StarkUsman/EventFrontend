@@ -21,16 +21,18 @@ export class ReservationComponent implements OnInit {
     num_of_persons: 0,
     additional_services: [],
     selectedMenu: null, // Track selected menu for stage 3
-    selected_items: [] // Track selected menu items for stage 4
+    selected_items: [], // Track selected menu items for stage 4
   };
   availableMenus: any[] = []; // This will hold the fetched menus
   menuItems: any[] = []; // Holds the selected menu items
   availableSlots: any[] = []; // Holds the selected slots for stage 2
+  additionalServices: any[] = [];
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   ngOnInit() {
     this.loadMenus();
+    this.loadAdditionalServices();
   }
 
   initDays(date: any) {
@@ -66,6 +68,12 @@ export class ReservationComponent implements OnInit {
     });
   }
 
+  loadAdditionalServices() {
+    this.http.get<any[]>('http://localhost:3000/additional-services').subscribe(data => {
+      this.additionalServices = data;
+    });
+  }
+
   loadMenuItems(menuItemIds: number[]) {
     this.menuItems = []; // Reset the menu items before loading
     menuItemIds.forEach((id) => {
@@ -75,7 +83,7 @@ export class ReservationComponent implements OnInit {
         console.log('Loaded menu items:', this.menuItems);
       });
     });
-    
+
     console.log('Loading menu items:', this.menuItems);
   }
 
@@ -112,6 +120,9 @@ export class ReservationComponent implements OnInit {
 
   saveReservation() {
     console.log('Saving Reservation:', this.reservation);
+    console.log("*****************************************")            
+    console.log("Reservation: ", JSON.stringify(this.reservation, null, 2));
+    console.log("*****************************************")
     alert('Reservation saved!');
   }
 
@@ -136,12 +147,31 @@ export class ReservationComponent implements OnInit {
     }
   }
 
-removeMenuItem(item: any) {
-  item.selected = false; // Unselect the item
-  const index = this.menuItems.indexOf(item);
-  if (index !== -1) {
-    this.menuItems.splice(index, 1); // Remove item from menuItems array
+  removeMenuItem(item: any) {
+    item.selected = false; // Unselect the item
+    const index = this.menuItems.indexOf(item);
+    if (index !== -1) {
+      this.menuItems.splice(index, 1); // Remove item from menuItems array
+    }
   }
-}
+
+  updateAdditionalServices(service: any) {
+    if (service.selected) {
+      this.reservation.additional_services.push(service);
+    } else {
+      const index = this.reservation.additional_services.findIndex((s: { additional_service_id: number }) => s.additional_service_id === service.additional_service_id);
+      if (index !== -1) {
+        this.reservation.additional_services.splice(index, 1);
+      }
+    }
+  }
+
+  getGrandTotal(): number {
+    let total = this.reservation.selectedMenu ? this.reservation.selectedMenu.menu_price : 0;
+    this.reservation.additional_services.forEach((service: { price: number }) => {
+      total += service.price;
+    });
+    return total;
+  }
 
 }
