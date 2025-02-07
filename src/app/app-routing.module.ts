@@ -5,6 +5,7 @@ import { EventComponent } from './event/event.component';
 import { ReservationComponent } from './reservation/reservation.component';
 import { MenuComponent } from './menu/menu.component';
 import { AdditionalComponent } from './additional/additional.component';
+import { SubMenuComponent } from './sub-menu/sub-menu.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/hall', pathMatch: 'full' },
@@ -13,6 +14,7 @@ const routes: Routes = [
   { path: 'reservation', component: ReservationComponent },
   { path: 'menu', component: MenuComponent },
   { path: 'add', component: AdditionalComponent },
+  { path: 'menuItem', component: SubMenuComponent }
 ];
 
 @NgModule({
