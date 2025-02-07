@@ -39,12 +39,18 @@ export class MenuComponent implements OnInit {
   }
 
   editMenu(menu: any) {
+    // Convert menu_item_ids to numbers
+    const menuItemIds = menu.menu_item_ids.map((id: string) => Number(id));
+  
     // Populate the fields with the selected menu for editing
     this.newMenu = { ...menu };
-    this.menuItems.forEach(menuItem => {
-      menuItem.selected = menu.menu_item_ids.includes(menuItem.menu_item_id);
+  
+    // Mark existing menu items as selected
+    this.menuItems.forEach(item => {
+      item.selected = menuItemIds.includes(item.menu_item_id);
     });
   }
+    
 
   saveMenu(menu: any) {
     // Ensure the menu_item_ids are correctly set based on selected checkboxes
