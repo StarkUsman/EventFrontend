@@ -29,10 +29,17 @@
         </div>
       </div>
     </form>
-    <button class="btn btn-primary" (click)="nextStage()"
-      [disabled]="!isStage1Valid()">
-      Next <i class="fa fa-arrow-right"></i>
-    </button>
+    <div class="btnAl">
+
+      <button class="btn btn-primary btnAll" (click)="nextStage()"
+        [disabled]="!isStage1Valid()">
+        Cancel <i class="fa fa-arrow-left"></i>
+      </button>
+      <button class="btn btn-primary btnAll" (click)="nextStage()"
+        [disabled]="!isStage1Valid()">
+        Next <i class="fa fa-arrow-right"></i>
+      </button>
+    </div>
   </div>
 
   <div *ngIf="stage === 2" class="calendar-container">
@@ -65,13 +72,16 @@
                   <input type="radio" name="selected_slot"
                     id="event-{{ slotType.toLowerCase() }}-{{ i }}-1"
                     (change)="selectSlot({ day: day, type: slotType, slot: 1 })">
-                  <label for="event-{{ slotType.toLowerCase() }}-{{ i }}-1">Slot
+                  <label for="event-{{ slotType.toLowerCase() }}-{{ i }}-1"
+                    class="slot">Slot
                     1</label>
 
                   <input type="radio" name="selected_slot"
                     id="event-{{ slotType.toLowerCase() }}-{{ i }}-2"
-                    (change)="selectSlot({ day: day, type: slotType, slot: 2 })">
-                  <label for="event-{{ slotType.toLowerCase() }}-{{ i }}-2">Slot
+                    (change)="selectSlot({ day: day, type: slotType, slot: 2 })"
+                    class="slot">
+                  <label for="event-{{ slotType.toLowerCase() }}-{{ i }}-2"
+                    class="slot">Slot
                     2</label>
                 </div>
               </div>
@@ -81,12 +91,12 @@
       </div>
     </div>
 
-    <div class="text-center mt-3">
-      <button class="btn btn-secondary" (click)="prevStage()"
+    <div class="text-center mt-3 btnAl">
+      <button class="btn btn-secondary btnAll" (click)="prevStage()"
         style="margin-right: 10px;">
         <i class="fa fa-arrow-left"></i> Back
       </button>
-      <button class="btn btn-primary" (click)="nextStage()"
+      <button class="btn btn-primary btnAll" (click)="nextStage()"
         [disabled]="!isStage2Valid()">
         Next <i class="fa fa-arrow-right"></i>
       </button>
@@ -142,18 +152,19 @@
           min="1" style="border: 2px solid #007bff; width:auto;">
       </div>
 
-      <div class="text-center mt-3">
-        <button class="btn btn-secondary" (click)="prevStage()"
+      <div class="text-center mt-3 btnAl">
+        <button class="btn btn-secondary btnAll" (click)="prevStage()"
           style="margin-right: 10px;">
           <i class="fa fa-arrow-left"></i> Back
         </button>
-        <button class="btn btn-primary" (click)="nextStage()"
+        <button class="btn btn-primary btnAll" (click)="nextStage()"
           [disabled]="!isStage3Valid()">
           Next <i class="fa fa-arrow-right"></i>
         </button>
       </div>
     </div>
   </div>
+
   <!-- Stage 4: Final Review -->
   <div *ngIf="stage === 4">
     <h3 class="mb-4 clr">Stage 4: Final Review</h3>
@@ -173,7 +184,8 @@
                 alt="{{ item.item_name }}" class="menu-item-img">
               <div class="menu-item-details">
                 <label class="menuItemLabel">{{ item.item_name }}</label>
-                <button *ngIf="item.selected" class="btn btn-danger btn-sm"
+                <button *ngIf="item.selected"
+                  class="btn btn-danger btn-sm btnAll"
                   (click)="removeMenuItem(item)">
                   <i class="fa fa-trash"></i> Remove
                 </button>
@@ -225,39 +237,13 @@
 
     <!-- Navigation Buttons -->
 
-    <div class="text-center mt-3">
-      <button class="btn btn-secondary" (click)="prevStage()">
+    <div class="text-center mt-3 btnAl">
+      <button class="btn btn-secondary btnAll" (click)="prevStage()">
         <i class="fa fa-arrow-left"></i> Back
       </button>
-      <button class="btn btn-primary" (click)="saveReservation()">
+      <button class="btn btn-primary btnAll" (click)="saveReservation()"
+        style="width: 100px;">
         Finish <i class="fa fa-check"></i>
       </button>
     </div>
   </div>
-
-  <!-- Inline CSS for Selection Effect -->
-  <style>
-  .menu-item-card {
-      cursor: pointer;
-      padding: 15px;
-      border: 2px solid transparent;
-      transition: 0.3s;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-      text-align: center;
-      border-radius: 10px;
-      margin-bottom: 10px;
-      background-color: #f8f9fa;
-      color: black;
-  }
-  
-  .menu-item-card:hover {
-      border-color: #007bff !important;
-      transform: scale(1.03);
-  }
-
-  .selected-service {
-      background-color: #007bff !important;
-      color: white !important;
-      border: 2px solid #0056b3 !important;
-  }
-</style>
