@@ -41,7 +41,8 @@
             ],
             "scripts": [
               "node_modules/bootstrap/dist/js/bootstrap.bundle.min.js",
-              "src/assets/script.js"
+              "src/assets/script.js",
+              "src/app/sidebar/app.js"
             ]
           },
           "configurations": {
@@ -105,5 +106,8 @@
         }
       }
     }
+  },
+  "cli": {
+    "analytics": "4c317979-a731-40e9-9ba7-be892849f8a9"
   }
 }
