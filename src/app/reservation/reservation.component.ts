@@ -165,6 +165,11 @@ export class ReservationComponent implements OnInit {
       }
     }
   }
+  
+  toggleAdditionalService(service: any) {
+    service.selected = !service.selected;
+}
+
 
   getGrandTotal(): number {
     let total = this.reservation.selectedMenu ? this.reservation.selectedMenu.menu_price : 0;
