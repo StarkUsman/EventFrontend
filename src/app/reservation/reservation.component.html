@@ -38,9 +38,18 @@
           <div class="events">
             <div class="event" *ngFor="let slotType of ['Normal', 'Luxury', 'Premium']">
               <div class="radio-container">
-                <input type="radio" name="selected_slot" id="event-{{ slotType.toLowerCase() }}-{{ i }}-1" (change)="selectSlot({ day: day, type: slotType, slot: 1 })">
+                <input type="radio" 
+                  name="selected_slot" 
+                  id="event-{{ slotType.toLowerCase() }}-{{ i }}-1" 
+                  (change)="selectSlot({ day: day, type: slotType, slot: 1 })"
+                  [disabled]="isSlotDisabled({ day: day, type: slotType, slot: 1 })"
+                  >
                 <label for="event-{{ slotType.toLowerCase() }}-{{ i }}-1">Slot 1</label>
-                <input type="radio" name="selected_slot" id="event-{{ slotType.toLowerCase() }}-{{ i }}-2" (change)="selectSlot({ day: day, type: slotType, slot: 2 })">
+                <input type="radio"
+                  name="selected_slot"
+                  id="event-{{ slotType.toLowerCase() }}-{{ i }}-2"
+                  (change)="selectSlot({ day: day, type: slotType, slot: 2 })"
+                  [disabled]="isSlotDisabled({ day: day, type: slotType, slot: 2 })">
                 <label for="event-{{ slotType.toLowerCase() }}-{{ i }}-2">Slot 2</label>
               </div>
             </div>

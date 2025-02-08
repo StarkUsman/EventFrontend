@@ -8,6 +8,7 @@ import { HttpClient } from '@angular/common/http';
   styleUrls: ['./reservation.component.css']
 })
 export class ReservationComponent implements OnInit {
+  backendUrl: string = 'http://localhost:3000';
   days: string[] = [];
   startDate: number = 15; // Starting day number, can be dynamic
   stage: number = 1; // Tracks the current stage of the reservation process
@@ -27,12 +28,14 @@ export class ReservationComponent implements OnInit {
   menuItems: any[] = []; // Holds the selected menu items
   availableSlots: any[] = []; // Holds the selected slots for stage 2
   additionalServices: any[] = [];
+  bookings: any[] = [];
 
   constructor(private http: HttpClient) { }
 
   ngOnInit() {
     this.loadMenus();
     this.loadAdditionalServices();
+    this.loadReservations();
   }
 
   initDays(date: any) {
@@ -61,15 +64,22 @@ export class ReservationComponent implements OnInit {
     }
   }
 
+  loadReservations() {
+    // Fetch reservations from API (replace with your real endpoint)
+    this.http.get<any[]>(`${this.backendUrl}/bookings`).subscribe(data => {
+      this.bookings = data;
+    });
+  }
+
   loadMenus() {
     // Fetch menus from API (replace with your real endpoint)
-    this.http.get<any[]>('http://localhost:3000/menus').subscribe(data => {
+    this.http.get<any[]>(`${this.backendUrl}/menus`).subscribe(data => {
       this.availableMenus = data;
     });
   }
 
   loadAdditionalServices() {
-    this.http.get<any[]>('http://localhost:3000/additional-services').subscribe(data => {
+    this.http.get<any[]>(`${this.backendUrl}/additional-services`).subscribe(data => {
       this.additionalServices = data;
     });
   }
@@ -77,7 +87,7 @@ export class ReservationComponent implements OnInit {
   loadMenuItems(menuItemIds: number[]) {
     this.menuItems = []; // Reset the menu items before loading
     menuItemIds.forEach((id) => {
-      this.http.get<any>(`http://localhost:3000/menu-items/${id}`).subscribe(item => {
+      this.http.get<any>(`${this.backendUrl}/menu-items/${id}`).subscribe(item => {
         item.selected = true;
         this.menuItems.push(item);
         console.log('Loaded menu items:', this.menuItems);
@@ -129,6 +139,24 @@ export class ReservationComponent implements OnInit {
   selectSlot(slot: any) {
     this.reservation.selected_slot = slot;
   }
+
+  isSlotDisabled(slot: any): boolean {
+    let formattedSlotDay = new Date(slot.day).toISOString().split('T')[0];
+    let date = new Date(formattedSlotDay);
+    date.setDate(date.getDate() + 1);
+    let newFormattedDate = date.toISOString().split('T')[0];
+
+    for (let i = 0; i < this.bookings.length; i++) {
+      const booking = this.bookings[i];
+      
+      if (newFormattedDate === booking.slot_day && slot.type === booking.slot_type && slot.slot === booking.slot_number) {
+        console.log('formattedSlotDay:', formattedSlotDay, 'booking.slot_day:', booking.slot_day);
+        return true;
+      }
+    }
+  
+    return false;
+  }  
 
   selectMenu(menu: any) {
     this.reservation.selectedMenu = menu; // Store selected menu
