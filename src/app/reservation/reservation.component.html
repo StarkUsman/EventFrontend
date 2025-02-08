@@ -196,7 +196,7 @@
     </div>
 
     <!-- Display Additional Services -->
-    <div class="mb-3">
+    <div class="mb-3 bdr">
       <h5 class="card-title">Additional Services</h5>
       <div class="menu-items-gallery">
         <div *ngFor="let service of additionalServices"
@@ -213,8 +213,8 @@
     </div>
 
     <!-- Calculate and Display Total Price -->
-    <div class="mb-3">
-      <h5>Total Price</h5>
+    <div class="mb-3 bdr">
+      <h4>Total Price</h4>
       <p><strong>Menu Price:</strong> {{ reservation.selectedMenu.menu_price |
         currency }}</p>
       <p><strong>Selected Items:</strong>

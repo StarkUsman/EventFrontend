@@ -344,11 +344,9 @@ label[_ngcontent-ng-c1845853520] {
   padding-right: 20px;
 }
 
-[ngStyle]="{
-  'cursor': 'pointer',
-  'transition': '0.3s',
-  'border': reservation.selectedMenu?.menu_id === menu.menu_id ? '2px solid #0056b3' : '2px solid transparent',
-  'boxShadow': '0 4px 8px rgba(0,0,0,0.1)',
-  'backgroundColor': reservation.selectedMenu?.menu_id === menu.menu_id ? '#007bff' : 'white',
-  'color': reservation.selectedMenu?.menu_id === menu.menu_id ? 'white' : 'black'
-}"
+.bdr{
+  border: 0.5px solid #e1dbdbde;
+  padding: 20px;
+  border-radius: 5px;
+  margin-bottom: 15px !important;
+}
