@@ -71,7 +71,8 @@
                 <div class="radio-container" style="display: flex; gap: 15px;">
                   <input type="radio" name="selected_slot"
                     id="event-{{ slotType.toLowerCase() }}-{{ i }}-1"
-                    (change)="selectSlot({ day: day, type: slotType, slot: 1 })">
+                    (change)="selectSlot({ day: day, type: slotType, slot: 1 })"
+                    [disabled]="isSlotDisabled({ day: day, type: slotType, slot: 1 })">
                   <label for="event-{{ slotType.toLowerCase() }}-{{ i }}-1"
                     class="slot">Slot
                     1</label>
@@ -79,6 +80,7 @@
                   <input type="radio" name="selected_slot"
                     id="event-{{ slotType.toLowerCase() }}-{{ i }}-2"
                     (change)="selectSlot({ day: day, type: slotType, slot: 2 })"
+                    [disabled]="isSlotDisabled({ day: day, type: slotType, slot: 2 })"
                     class="slot">
                   <label for="event-{{ slotType.toLowerCase() }}-{{ i }}-2"
                     class="slot">Slot
@@ -179,14 +181,18 @@
           <!-- Display selected menu items in a grid -->
           <div class="menu-items-gallery">
             <div *ngFor="let item of menuItems" class="menu-item-card">
-              <img [src]="item.imageUrl || 'default-image.jpg'"
-                alt="{{ item.item_name }}" class="menu-item-img">
               <div class="menu-item-details">
                 <label class="menuItemLabel">{{ item.item_name }}</label>
+                <label class="menuItemLabel">{{ item.price | currency }}</label>
                 <button *ngIf="item.selected"
                   class="btn btn-danger btn-sm btnAll"
                   (click)="removeMenuItem(item)">
-                  <i class="fa fa-trash"></i> Remove
+                  <i class="fa fa-trash-alt"></i> Remove
+                </button>
+                <button *ngIf="!item.selected"
+                  class="btn btn-primary btn-sm btnAll"
+                  (click)="addMenuItem(item)">
+                  <i class="fa fa-plus"></i> Add Item
                 </button>
               </div>
             </div>
@@ -197,13 +203,15 @@
 
     <!-- Display Additional Services -->
     <div class="mb-3 bdr">
-      <h5 class="card-title">Additional Services</h5>
+      <h5 class="card-title">Select Additional Services</h5>
       <div class="menu-items-gallery">
         <div *ngFor="let service of additionalServices"
           class="menu-item-card"
           (click)="toggleAdditionalService(service)"
           [ngClass]="{ 'selected-service': service.selected }">
-
+          <input type="checkbox" style="display: none;"
+            id="service-{{ service.additional_service_id }}"
+            [(ngModel)]="service.selected">
           <label class="menuItemLabel">
             {{ service.additional_service_name }} - {{ service.price | currency
             }}
@@ -212,26 +220,59 @@
       </div>
     </div>
 
+    <!-- additional services -->
+    <div *ngIf="checkService()" class="mb-3 bdr">
+      <div class="header">
+        <h5>Additional Services</h5>
+      </div>
+    
+      <form>
+        <div class="labels-row">
+          <span class="label">Item</span>
+          <span class="label">Price</span>
+          <span class="label">Quantity</span>
+          <span class="label">Total Price</span>
+          <button type="button" class="remove-btn"></button>
+        </div>
+        <div class="service-row" *ngFor="let service of additionalServicesSelected; let i = index" [attr.id]="'row-' + i">
+          <input class="itemName" type="text" [(ngModel)]="service.additional_service_name" name="itemName-{{ i }}" readonly>
+          <input type="number" [(ngModel)]="service.price" name="price-{{ i }}" class="price" (input)="updateTotal(service)">
+          <input type="number" [(ngModel)]="service.quantity" name="quantity-{{ i }}" class="quantity" (input)="updateTotal(service)">
+          <input type="number" [(ngModel)]="service.totalPrice" name="totalPrice-{{ i }}" class="total-price" readonly>
+          <button type="button" class="remove-btn fa fa-trash-alt" (click)="toggleAdditionalService(service)"></button>
+        </div>
+      </form>
+    </div>    
     <!-- Calculate and Display Total Price -->
     <div class="mb-3 bdr">
-      <h4>Total Price</h4>
-      <p><strong>Menu Price:</strong> {{ reservation.selectedMenu.menu_price |
-        currency }}</p>
-      <p><strong>Selected Items:</strong>
-        <span
-          *ngFor="let item of reservation.selected_items; let isLast = last">
-          {{ item.item_name }} - {{ item.price | currency }}<span
-            *ngIf="!isLast">, </span>
-        </span>
-      </p>
-      <p><strong>Additional Services:</strong>
-        <span
-          *ngFor="let service of reservation.additional_services; let isLast = last">
-          {{ service.additional_service_name }} - {{ service.price | currency
-          }}<span *ngIf="!isLast">, </span>
-        </span>
-      </p>
-      <h4><strong>Grand Total: {{ getGrandTotal() | currency }}</strong></h4>
+      <h5>Discount</h5>
+      <form>
+        <div class="labels-row mlr">
+          <span class="label-2">Service</span>
+          <span class="label-2">Calculated Price</span>
+          <span class="label-2">Discount</span>
+          <span class="label-2">Total Payable</span>
+        </div>
+        <div class="service-row mlr">
+          <input type="text" class="itemName" [(ngModel)]="reservation.selectedMenu.menu_name" name="reservation.selectedMenu.menu_name" readonly>
+          <input type="number" class="price" [(ngModel)]="reservation.selectedMenu.price" name="reservation.selectedMenu.menu_price" readonly>
+          <input type="number" class="discount" [(ngModel)]="reservation.selectedMenu.discount" name="discount" (input)="calculateMenuPrice()" placeholder="0">
+          <input type="number" class="total-price" [(ngModel)]="reservation.selectedMenu.finalPrice" name="reservation.selectedMenu.totalPrice" readonly>
+        </div>
+        <!-- additonal service bill -->
+        <div *ngIf="checkService()" class="service-row mlr">
+          <input type="text" class="itemName" value="Additional Services" name="additionalServicesSelected" readonly>
+          <input type="number" class="price" [(ngModel)]="totalAdditionalPrice" name="Total" readonly>
+          <input type="number" class="discount" [(ngModel)]="reservation.additionalDiscount" name="additionalServicesSelectedDiscount" (input)="calculateAdditionalServicePrice()" placeholder="0">
+          <input type="number" class="total-price" [(ngModel)]="reservation.additionalPrice" name="additionalServicesSelectedFinalPrice" readonly>
+        </div>
+      </form>
+      <!-- <h4><strong>Grand Total: {{ getGrandTotal() | currency }}</strong></h4> -->
+    </div>
+
+    <div class="mb-3 bdr labels-row">
+      <h5>Total Payable Amount </h5>
+      <h5>{{ getGrandTotal() | currency }}</h5>
     </div>
 
     <!-- Navigation Buttons -->

@@ -10,25 +10,27 @@ import { HttpClient } from '@angular/common/http';
 export class ReservationComponent implements OnInit {
   backendUrl: string = 'http://localhost:3000';
   days: string[] = [];
-  startDate: number = 15; // Starting day number, can be dynamic
-  stage: number = 1; // Tracks the current stage of the reservation process
+  startDate: number = 15; 
+  stage: number = 1; 
   reservation: any = {
     reservation_name: '',
     reserver_name: '',
     description: '',
     date: '',
     selected_slot: null,
-    menus: [],  // Updated to contain menu information
+    menus: [],  
     num_of_persons: 0,
     additional_services: [],
-    selectedMenu: null, // Track selected menu for stage 3
-    selected_items: [], // Track selected menu items for stage 4
+    selectedMenu: null, 
+    selected_items: [], 
   };
-  availableMenus: any[] = []; // This will hold the fetched menus
-  menuItems: any[] = []; // Holds the selected menu items
-  availableSlots: any[] = []; // Holds the selected slots for stage 2
+  availableMenus: any[] = []; 
+  menuItems: any[] = []; 
+  availableSlots: any[] = []; 
   additionalServices: any[] = [];
+  additionalServicesSelected: any[] = [];
   bookings: any[] = [];
+  totalAdditionalPrice: number = 0;
 
   constructor(private http: HttpClient) { }
 
@@ -90,11 +92,8 @@ export class ReservationComponent implements OnInit {
       this.http.get<any>(`${this.backendUrl}/menu-items/${id}`).subscribe(item => {
         item.selected = true;
         this.menuItems.push(item);
-        console.log('Loaded menu items:', this.menuItems);
       });
     });
-
-    console.log('Loading menu items:', this.menuItems);
   }
 
   nextStage() {
@@ -105,7 +104,11 @@ export class ReservationComponent implements OnInit {
       this.stage++;
     } else if (this.stage === 3 && this.isStage3Valid()) {
       this.stage++;
-      this.loadMenuItems(this.reservation.selectedMenu.menu_item_ids); // Load menu items based on selected menu
+      this.reservation.selectedMenu.price = this.reservation.selectedMenu.menu_price * this.reservation.num_of_persons;
+      this.loadMenuItems(this.reservation.selectedMenu.menu_item_ids);
+      this.reservation.selectedMenu.finalPrice = this.reservation.selectedMenu.price;
+      this.reservation.additionalPrice = 0;
+      this.reservation.additionalDiscount = 0;
     }
   }
 
@@ -129,6 +132,22 @@ export class ReservationComponent implements OnInit {
   }
 
   saveReservation() {
+    let reservationName = this.reservation.reservation_name;
+    let reserverName = this.reservation.reserver_name;
+    let description = this.reservation.description;
+    let slot_day = this.reservation.selected_slot.day;
+    let slot_type = this.reservation.selected_slot.type;
+    let slot_number = this.reservation.selected_slot.slot;
+    let number_of_persons = this.reservation.num_of_persons;
+    let menuId = this.reservation.selectedMenu.menu_id;
+    let selected_menu_items = [];
+    for (let i = 0; i < this.menuItems.length; i++) {
+      const item = this.menuItems[i];
+      if (item.selected) {
+        selected_menu_items.push(item.item_name);
+      }
+    }
+
     console.log('Saving Reservation:', this.reservation);
     console.log("*****************************************")            
     console.log("Reservation: ", JSON.stringify(this.reservation, null, 2));
@@ -150,7 +169,6 @@ export class ReservationComponent implements OnInit {
       const booking = this.bookings[i];
       
       if (newFormattedDate === booking.slot_day && slot.type === booking.slot_type && slot.slot === booking.slot_number) {
-        console.log('formattedSlotDay:', formattedSlotDay, 'booking.slot_day:', booking.slot_day);
         return true;
       }
     }
@@ -176,14 +194,15 @@ export class ReservationComponent implements OnInit {
   }
 
   removeMenuItem(item: any) {
-    item.selected = false; // Unselect the item
-    const index = this.menuItems.indexOf(item);
-    if (index !== -1) {
-      this.menuItems.splice(index, 1); // Remove item from menuItems array
-    }
+    item.selected = false;
+  }
+
+  addMenuItem(item: any) {
+    item.selected = true;
   }
 
   updateAdditionalServices(service: any) {
+    console.log('Service:', service);
     if (service.selected) {
       this.reservation.additional_services.push(service);
     } else {
@@ -192,19 +211,66 @@ export class ReservationComponent implements OnInit {
         this.reservation.additional_services.splice(index, 1);
       }
     }
+    this.updateSelectedServices(service);
   }
   
   toggleAdditionalService(service: any) {
     service.selected = !service.selected;
-}
+    this.updateAdditionalServices(service);
+  }
 
+  checkService(): boolean {
+    // if any of the additional services is selected, return true
+    for (let i = 0; i < this.additionalServices.length; i++) {
+      if (this.additionalServices[i].selected) {
+        return true;
+      }
+    }
+    return false;
+  }
 
   getGrandTotal(): number {
-    let total = this.reservation.selectedMenu ? this.reservation.selectedMenu.menu_price : 0;
-    this.reservation.additional_services.forEach((service: { price: number }) => {
-      total += service.price;
-    });
+    let total = this.reservation.selectedMenu.finalPrice + this.reservation.additionalPrice;
     return total;
   }
 
+  updateSelectedServices(service: any) {
+    if (service.selected) {
+      this.additionalServicesSelected.push(service);
+    } else {
+      const index = this.additionalServicesSelected.indexOf(service);
+      if (index !== -1) {
+        this.additionalServicesSelected.splice(index, 1);
+      }
+    }
+  }
+
+  calculateAdditionalPrice() {
+    this.totalAdditionalPrice = 0;
+    for (let i = 0; i < this.additionalServicesSelected.length; i++) {
+      this.totalAdditionalPrice += this.additionalServicesSelected[i].totalPrice;
+    }
+    this.calculateAdditionalServicePrice();
+  }
+
+  updateTotal(service: any) {
+    service.totalPrice = (service.price || 0) * (service.quantity || 0);
+    this.calculateAdditionalPrice();
+  }
+
+  addService() {
+    this.additionalServices.push({ itemName: 'New Item', price: 0, quantity: 1, totalPrice: 0 });
+  }
+
+  removeService(index: number) {
+    this.additionalServices.splice(index, 1);
+  }
+
+  calculateMenuPrice(){
+    this.reservation.selectedMenu.finalPrice = this.reservation.selectedMenu.price - this.reservation.selectedMenu.discount;
+  }
+
+  calculateAdditionalServicePrice(){
+    this.reservation.additionalPrice = this.totalAdditionalPrice - this.reservation.additionalDiscount;
+  }
 }
