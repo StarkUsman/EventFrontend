@@ -1,7 +1,7 @@
 <div class="row custom-container">
     <div class="col-sm-12">
         <!-- Add Hall Button -->
-        <button class="btn btn-primary mb-3 primary-btn" (click)="addNewHall()">
+        <button class=" mb-3 hall" (click)="addNewHall()">
             <i class="fa fa-plus"></i> Add Hall
         </button>
 
@@ -10,7 +10,7 @@
             <div class="card-body">
                 <div class="table-responsive">
                     <table class="table table-center table-hover">
-                        <thead class="thead-light">
+                        <thead class="custom-thead">
                             <tr>
                                 <th>ID</th>
                                 <th>Hall Name</th>
@@ -21,47 +21,61 @@
                         </thead>
                         <tbody>
                             <tr *ngFor="let hall of halls; let i = index">
-                                <td>{{ hall.hall_id || 'New' }}</td>
-
-                                <!-- Editable Fields -->
+                                <td class="clr">{{ hall.hall_id || 'New' }}</td>
                                 <td>
-                                    <input *ngIf="hall.isEditing" type="text" class="form-control" [(ngModel)]="hall.hall_name" required>
-                                    <span *ngIf="!hall.isEditing">{{ hall.hall_name }}</span>
+                                    <input *ngIf="hall.isEditing" type="text"
+                                        class="form-control"
+                                        [(ngModel)]="hall.hall_name" required>
+                                    <span class="clr" *ngIf="!hall.isEditing">{{
+                                        hall.hall_name }}</span>
                                 </td>
                                 <td>
-                                    <input *ngIf="hall.isEditing" type="number" class="form-control" [(ngModel)]="hall.capacity" required>
-                                    <span *ngIf="!hall.isEditing">{{ hall.capacity }}</span>
+                                    <input *ngIf="hall.isEditing" type="number"
+                                        class="form-control"
+                                        [(ngModel)]="hall.capacity" required>
+                                    <span class="clr" *ngIf="!hall.isEditing">{{
+                                        hall.capacity }}</span>
                                 </td>
                                 <td>
-                                    <select *ngIf="hall.isEditing" class="form-control" [(ngModel)]="hall.isAvailable">
+                                    <select *ngIf="hall.isEditing"
+                                        class="form-control"
+                                        [(ngModel)]="hall.isAvailable">
                                         <option [value]="1">Available</option>
-                                        <option [value]="0">Not Available</option>
+                                        <option [value]="0">Not
+                                            Available</option>
                                     </select>
-                                    <span *ngIf="!hall.isEditing" 
-                                    [ngClass]="hall.isAvailable == 1 ? 'badge bg-success-light' : 'badge bg-danger-light'"
-                                        >
-                                        {{ hall.isAvailable == 1 ? 'Available' : 'Unavailable' }}
+                                    <span *ngIf="!hall.isEditing"
+                                        [ngClass]="hall.isAvailable == 1 ? 'badge bg-success-light' : 'badge bg-danger-light'">
+                                        {{ hall.isAvailable == 1 ? 'Available' :
+                                        'Unavailable' }}
                                     </span>
                                 </td>
-
-                                <!-- Action Buttons -->
                                 <td class="align-items-center">
-                                    <button *ngIf="hall.isEditing" class="btn btn-success me-2" (click)="saveHall(hall)">
+                                    <button *ngIf="hall.isEditing"
+                                        class="btn1 me-2"
+                                        (click)="saveHall(hall)">
                                         <i class="fa fa-check"></i> Save
                                     </button>
-                                    <button *ngIf="hall.isEditing" class="btn btn-secondary me-2" (click)="cancelEdit(hall, i)">
+                                    <button *ngIf="hall.isEditing"
+                                        class="btn btn-secondary me-2"
+                                        (click)="cancelEdit(hall, i)">
                                         <i class="fa fa-times"></i> Cancel
                                     </button>
-                                    <button *ngIf="!hall.isEditing" class="btn btn-primary me-2" (click)="editHall(hall)">
-                                        <i class="fa fa-pencil"></i> Edit
+                                    <button *ngIf="!hall.isEditing"
+                                        class="btnE me-2"
+                                        (click)="editHall(hall)">
+                                        <i class="fa fa-pencil-alt"></i> Edit
                                     </button>
-                                    <button *ngIf="!hall.isEditing" class="btn btn-danger me-2" (click)="deleteHall(hall.hall_id, i)">
+                                    <button *ngIf="!hall.isEditing"
+                                        class="btnD me-2"
+                                        (click)="deleteHall(hall.hall_id, i)">
                                         <i class="fa fa-trash"></i> Delete
                                     </button>
                                 </td>
                             </tr>
                         </tbody>
                     </table>
+
                 </div>
             </div>
         </div>

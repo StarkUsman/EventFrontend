@@ -1,13 +1,10 @@
-
-
-
 .main-content {
   width: calc(100% - 250px); /* Remaining width */
   padding: 20px;
   margin-top: 40px;
+  background-color: #F7F8F9;
+
 }
-
-
 
 :root{
   --base-clr: #11121a;
@@ -162,7 +159,7 @@ main p{
   h2, p { margin-top: 1em }
 }
 
-@media(max-width: 800px){
+/* @media(max-width: 800px){
   body{
     grid-template-columns: 1fr;
   }
@@ -232,7 +229,7 @@ main p{
       }
     }
   }
-}
+} */
 
 #sidebar.collapsed {
   width: 60px;
