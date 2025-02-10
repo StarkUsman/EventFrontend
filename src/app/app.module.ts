@@ -12,6 +12,7 @@ import { MenuComponent } from './menu/menu.component';
 import { SidebarComponent } from './sidebar/sidebar.component';
 import { AdditionalComponent } from './additional/additional.component';
 import { SubMenuComponent } from './sub-menu/sub-menu.component';
+import { ReservationListComponent } from './reservation-list/reservation-list.component';
 
 @NgModule({
   declarations: [
@@ -22,7 +23,8 @@ import { SubMenuComponent } from './sub-menu/sub-menu.component';
     MenuComponent,
     SidebarComponent,
     AdditionalComponent,
-    SubMenuComponent
+    SubMenuComponent,
+    ReservationListComponent
   ],
   imports: [
     BrowserModule,

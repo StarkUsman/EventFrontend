@@ -31,9 +31,8 @@
     </form>
     <div class="btnAl">
 
-      <button class="btn btn-primary btnAll" (click)="nextStage()"
-        [disabled]="!isStage1Valid()">
-        Cancel <i class="fa fa-arrow-left"></i>
+      <button class="btn btn-primary btnAll" (click)="cancelReservation()">
+        <i class="fa fa-times" style="font-size:19px;"></i> Cancel
       </button>
       <button class="btn btn-primary btnAll" (click)="nextStage()"
         [disabled]="!isStage1Valid()">

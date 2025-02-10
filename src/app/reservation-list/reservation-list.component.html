@@ -1,0 +1,46 @@
+<div class="row custom-container">
+    <div class="col-sm-12">
+        <button class="btn btn-primary mb-3 primary-btn" (click)="addReservation()">
+            <i class="fa fa-plus"></i> Add Reservation
+        </button>
+
+        <div class="card-table">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-center table-hover">
+                        <thead class="thead-light">
+                            <tr>
+                                <th>ID</th>
+                                <th>Booking Name</th>
+                                <th>Booker Name</th>
+                                <th>Date</th>
+                                <th>Hall</th>
+                                <th>Persons</th>
+                                <th>Menu</th>
+                                <th>Additional Services</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let reservation of reservations let i = index">
+                                <td>{{ i+1 }}</td>
+                                <td>{{ reservation.booking_name }}</td>
+                                <td>{{ reservation.booker_name }}</td>
+                                <td>{{ reservation.slot_day }}</td>
+                                <td>{{ reservation.slot_type }}</td>
+                                <td>{{ reservation.number_of_persons }}</td>
+                                <td>{{ getMenuName(reservation.menu_id) }}</td>
+                                <td>{{ getAdditionalServices(reservation.add_service_ids) }}</td>
+                                <td class="align-items-center">
+                                    <button class="btn btn-danger me-2" (click)="deleteReservation(reservation.booking_id)">
+                                        <i class="fa fa-trash-alt"></i> Delete
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

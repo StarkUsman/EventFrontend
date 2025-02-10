@@ -1,0 +1,23 @@
+.custom-container {
+    width: 100%;
+}
+/* .primary-btn {
+    background-color: #007bff;
+    color: white; 
+    margin-top: 10px;
+    display: flex;
+    margin-left: auto;
+} */
+
+.primary-btn {
+    margin-top: 10px;
+    margin-left: auto;
+    display: block;
+    width: fit-content; /* Ensures the button doesn’t stretch */
+}
+
+.primary-div {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px; /* Adds spacing between buttons */
+}

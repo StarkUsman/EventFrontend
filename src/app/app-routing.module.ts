@@ -6,11 +6,13 @@ import { ReservationComponent } from './reservation/reservation.component';
 import { MenuComponent } from './menu/menu.component';
 import { AdditionalComponent } from './additional/additional.component';
 import { SubMenuComponent } from './sub-menu/sub-menu.component';
+import { ReservationListComponent } from './reservation-list/reservation-list.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/hall', pathMatch: 'full' },
   { path: 'hall', component: HallComponent },
   { path: 'event', component: EventComponent },
+  { path: 'reservationList', component: ReservationListComponent },
   { path: 'reservation', component: ReservationComponent },
   { path: 'menu', component: MenuComponent },
   { path: 'add', component: AdditionalComponent },

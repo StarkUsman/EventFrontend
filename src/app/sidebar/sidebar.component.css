@@ -48,6 +48,16 @@ body{
   overflow: hidden;
   text-wrap: nowrap;
 }
+
+#sidebar > ul > li:hover {
+  color: rgb(120, 14, 218);
+  font-size: large;
+}
+
+#sidebar > ul > li > ul > li:hover {
+  color: blue;
+  font-size: large;
+}
 #sidebar.close{
   padding: 5px;
   width: 60px;

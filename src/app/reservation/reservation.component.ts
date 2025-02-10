@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-reservation',
@@ -32,12 +33,16 @@ export class ReservationComponent implements OnInit {
   bookings: any[] = [];
   totalAdditionalPrice: number = 0;
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private router: Router) { }
 
   ngOnInit() {
     this.loadMenus();
     this.loadAdditionalServices();
     this.loadReservations();
+  }
+
+  cancelReservation(){
+    this.router.navigate(['/reservationList']);
   }
 
   initDays(date: any) {
@@ -132,27 +137,50 @@ export class ReservationComponent implements OnInit {
   }
 
   saveReservation() {
-    let reservationName = this.reservation.reservation_name;
-    let reserverName = this.reservation.reserver_name;
+    let booking_name = this.reservation.reservation_name;
+    let booker_name = this.reservation.reserver_name;
     let description = this.reservation.description;
-    let slot_day = this.reservation.selected_slot.day;
+    let date = this.reservation.selected_slot.day;
+
+    const dateObj = new Date(this.reservation.selected_slot.day);
+    dateObj.setDate(dateObj.getDate() + 1);
+    let slot_day = dateObj.toISOString().split('T')[0];
     let slot_type = this.reservation.selected_slot.type;
     let slot_number = this.reservation.selected_slot.slot;
     let number_of_persons = this.reservation.num_of_persons;
+    let add_service_ids = '';
+    for (let i = 0; i < this.additionalServicesSelected.length; i++) {
+      add_service_ids += this.additionalServicesSelected[i].additional_service_id + ',';
+    }
     let menuId = this.reservation.selectedMenu.menu_id;
-    let selected_menu_items = [];
+
+    let selected_menu_items_ids = '';
     for (let i = 0; i < this.menuItems.length; i++) {
       const item = this.menuItems[i];
       if (item.selected) {
-        selected_menu_items.push(item.item_name);
+        selected_menu_items_ids += item.menu_item_id + ',';
       }
     }
 
-    console.log('Saving Reservation:', this.reservation);
-    console.log("*****************************************")            
-    console.log("Reservation: ", JSON.stringify(this.reservation, null, 2));
-    console.log("*****************************************")
-    alert('Reservation saved!');
+    let booking = {
+      booking_name: booking_name,
+      booker_name: booker_name,
+      description: description,
+      date: date,
+      slot_day: slot_day,
+      slot_type: slot_type,
+      slot_number: slot_number,
+      number_of_persons: number_of_persons,
+      add_service_ids: add_service_ids,
+      menu_id: menuId
+      // selected_menu_items_ids: selected_menu_items_ids
+    };
+
+    this.http.post(`${this.backendUrl}/bookings`, booking).subscribe(() => {
+      alert('Reservation saved!');
+
+      this.router.navigate(['/reservationList']);
+    });
   }
 
   selectSlot(slot: any) {
