@@ -187,3 +187,81 @@
       </div>
     </div>
   </div>
+
+  <!-- ################################################################################# -->
+
+
+
+
+  <!-- Sidebar -->
+<div class="sidebar" [class.collapsed]="isCollapsed">
+  <ul>
+    <li>
+      <span class="logo">coding2go</span>
+      <button (click)="toggleSidebar()" id="toggle-btn">
+        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e8eaed">
+          <path d="m313-480 155 156q11 11 11.5 27.5T468-268q-11 11-28 11t-28-11L228-452q-6-6-8.5-13t-2.5-15q0-8 2.5-15t8.5-13l184-184q11-11 27.5-11.5T468-692q11 11 11 28t-11 28L313-480Z" />
+        </svg>
+      </button>
+    </li>
+
+    <li class="active">
+      <a [routerLink]="'/hall'">
+        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e8eaed">
+          <path d="M240-200h120v-200q0-17 11.5-28.5T400-440h160q17 0 28.5 11.5T600-400v200h120v-360L480-740 240-560v360Z" />
+        </svg>
+        <span>Home</span>
+      </a>
+    </li>
+
+    <li>
+      <a [routerLink]="'/dashboard'">
+        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e8eaed">
+          <path d="M520-640v-160q0-17 11.5-28.5T560-840h240q17 0 28.5 11.5T840-800v160q0 17-11.5 28.5T800-600H560Z" />
+        </svg>
+        <span>Dashboard</span>
+      </a>
+    </li>
+
+    <li>
+      <button (click)="toggleSubMenu('create')" class="dropdown-btn">
+        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e8eaed">
+          <path d="M160-160q-33 0-56.5-23.5T80-240v-480q0-33 23.5-56.5T160-800h207q16 0 30.5 6t25.5 17l57 57h320q33 0 56.5 23.5T880-640v400Z" />
+        </svg>
+        <span>Create</span>
+        <span class="arrow" [class.open]="activeDropdown === 'create'">▼</span>
+      </button>
+      <ul class="sub-menu" [class.open]="activeDropdown === 'create'">
+        <li><a href="#">Folder</a></li>
+        <li><a href="#">Document</a></li>
+        <li><a href="#">Project</a></li>
+      </ul>
+    </li>
+
+    <li>
+      <button (click)="toggleSubMenu('todo')" class="dropdown-btn">
+        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e8eaed">
+          <path d="m221-313 142-142q12-12 28-11.5t28 12.5q11 12 11 28t-11 28L250-228q-12 12-28 12t-28-12l-86-86q-11-11-11-28t11-28q11-11 28-11t28 11l57 57Z" />
+        </svg>
+        <span>Todo-Lists</span>
+        <span class="arrow" [class.open]="activeDropdown === 'todo'">▼</span>
+      </button>
+      <ul class="sub-menu" [class.open]="activeDropdown === 'todo'">
+        <li><a href="#">Work</a></li>
+        <li><a href="#">Private</a></li>
+        <li><a href="#">Coding</a></li>
+        <li><a href="#">Gardening</a></li>
+        <li><a href="#">School</a></li>
+      </ul>
+    </li>
+
+    <li>
+      <a [routerLink]="'/reservation'">
+        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e8eaed">
+          <path d="M200-80q-33 0-56.5-23.5T120-160v-560q0-33 23.5-56.5T200-800h40Z" />
+        </svg>
+        <span>Reservations</span>
+      </a>
+    </li>
+  </ul>
+</div>

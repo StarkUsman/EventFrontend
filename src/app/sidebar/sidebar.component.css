@@ -224,8 +224,6 @@ main p{
   }
 }
 
-
-
-
-
-
+#sidebar.collapsed {
+  width: 60px;
+}
