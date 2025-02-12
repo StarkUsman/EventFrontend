@@ -13,6 +13,7 @@ import { SidebarComponent } from './sidebar/sidebar.component';
 import { AdditionalComponent } from './additional/additional.component';
 import { SubMenuComponent } from './sub-menu/sub-menu.component';
 import { ReservationListComponent } from './reservation-list/reservation-list.component';
+import { LoginComponent } from './login/login.component';
 
 @NgModule({
   declarations: [
@@ -24,7 +25,8 @@ import { ReservationListComponent } from './reservation-list/reservation-list.co
     SidebarComponent,
     AdditionalComponent,
     SubMenuComponent,
-    ReservationListComponent
+    ReservationListComponent,
+    LoginComponent
   ],
   imports: [
     BrowserModule,
