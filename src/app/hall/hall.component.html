@@ -34,14 +34,23 @@
                                 </td>
                                 <td>
                                     <select *ngIf="hall.isEditing" class="form-control" [(ngModel)]="hall.isAvailable">
-                                        <option [value]="1">Available</option>
+                                        <option [value]="3">Fully Available</option>
+                                        <option [value]="1">Slot 1 Available</option>
+                                        <option [value]="2">Slot 2 Available</option>
                                         <option [value]="0">Not Available</option>
                                     </select>
                                     <span *ngIf="!hall.isEditing" 
-                                    [ngClass]="hall.isAvailable == 1 ? 'badge bg-success-light' : 'badge bg-danger-light'"
+                                    [ngClass]="
+                                        hall.isAvailable1 == 1 && hall.isAvailable2 == 1 ? 'badge bg-success-light' : 
+                                        hall.isAvailable1 == 0 && hall.isAvailable2 == 0 ? 'badge bg-danger-light' : 
+                                        hall.isAvailable1 == 1 && hall.isAvailable2 == 0 || hall.isAvailable1 == 0 && hall.isAvailable2 == 1 ? 'badge bg-warning' : 
+                                        'badge bg-secondary-light'"                                  
                                         >
-                                        {{ hall.isAvailable == 1 ? 'Available' : 'Unavailable' }}
-                                    </span>
+                                        {{ hall.isAvailable1 == 1 && hall.isAvailable2 == 1 ? 'Available' : 
+                                        hall.isAvailable1 == 0 && hall.isAvailable2 == 0 ? 'Unavailable' : 
+                                        hall.isAvailable1 == 1 && hall.isAvailable2 == 0 || hall.isAvailable1 == 0 && hall.isAvailable2 == 1 ? 'Partially Available' :
+                                        'Unknown' }}
+                                        </span>
                                 </td>
 
                                 <!-- Action Buttons -->

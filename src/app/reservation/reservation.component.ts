@@ -11,8 +11,13 @@ import { Router } from '@angular/router';
 export class ReservationComponent implements OnInit {
   backendUrl: string = 'http://localhost:3000';
   days: string[] = [];
+  days_cal: string[] = [];
+  month: string[] = [];
+  year: string = "";
   startDate: number = 15; 
   stage: number = 1; 
+  halls: any[] = [];
+  slotTypes: string[] = [];
   reservation: any = {
     reservation_name: '',
     reserver_name: '',
@@ -36,6 +41,7 @@ export class ReservationComponent implements OnInit {
   constructor(private http: HttpClient, private router: Router) { }
 
   ngOnInit() {
+    this.loadHalls();
     this.loadMenus();
     this.loadAdditionalServices();
     this.loadReservations();
@@ -69,6 +75,13 @@ export class ReservationComponent implements OnInit {
       day.setDate(tempDate.getDate() + i);
       this.days.push(day.toDateString());
     }
+
+    this.days_cal = this.days.map(date => date.split(' ')[2]);
+    this.month = this.days.map(date => date.split(' ')[1]);
+    this.year = this.days.map(date => date.split(' ')[3])[0];
+    
+    console.log(this.days_cal);
+    console.log(this.month);
   }
 
   loadReservations() {
@@ -98,6 +111,16 @@ export class ReservationComponent implements OnInit {
         item.selected = true;
         this.menuItems.push(item);
       });
+    });
+  }
+
+  loadHalls() {
+    // Fetch halls from API (replace with your real endpoint)
+    this.http.get<any[]>(`${this.backendUrl}/halls`).subscribe(data => {
+      this.halls = data;
+      // console.log('Halls:', this.halls);
+      this.slotTypes = this.halls.map(hall => hall.hall_name);
+      console.log('Slot Types:', this.slotTypes);
     });
   }
 

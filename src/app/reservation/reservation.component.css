@@ -12,9 +12,9 @@ body {
 
 .calendar {
   display: grid;
-  gap: 10px;
+  /* gap: 10px; */
   grid-template-columns: auto 1fr;
-  margin: 2rem;
+  margin: 1rem;
 }
 
 .timeline {
@@ -66,10 +66,25 @@ body {
   font-weight: 600;
 }
 
-.date-day {
-  font-size: 1.2rem;
-  font-weight: 100;
+.date-circle {
+  width: 50px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 18px;
+  background: #007bff;
+  color: white;
+  border-radius: 50%;
+  text-align: center;
+  margin-left: 30px;
 }
+
+.date-day {
+  margin: 0;
+}
+
 
 .radio-container {
   display: flex;
@@ -218,6 +233,15 @@ h3 {
   color: #54A5FC; /* Dark Green Heading */
 }
 
+.heading {
+  width: 100%;
+  /* background-color: rgb(255, 147, 147); */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
 .form-label {
   font-weight: 600;
   color: black;
@@ -287,14 +311,6 @@ h3 {
 }
 
 
-.date[_ngcontent-ng-c2295901411] {
-  display: flex
-;
-  gap: 0.5em;
-  align-items: center;
-  background-color: #54A5FC !important;
-}
-
 input[type=radio][_ngcontent-ng-c607057134]:checked {
   background:  #54A5FC;
   color: white;
@@ -330,11 +346,7 @@ input[type=radio][_ngcontent-ng-c607057134]:checked {
 
 }
 
-label[_ngcontent-ng-c1845853520] {
-  padding-left: 20px;
-  padding-right: 20px;
 
-}
 
 .btnAll{
   width: 100px;

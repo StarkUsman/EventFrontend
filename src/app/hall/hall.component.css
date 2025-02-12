@@ -48,3 +48,8 @@ th:nth-child(5), td:nth-child(5) {
     margin-top: 5px;
     margin-bottom: 20px;
 }
+
+.bg-dark-gray {
+    background-color: #055398;
+    color: white;
+  }

@@ -46,6 +46,20 @@ export class HallComponent implements OnInit {
       return;
     }
 
+    if(hall.isAvailable == 3){
+      hall.isAvailable1 = 1;
+      hall.isAvailable2 = 1;
+    } else if(hall.isAvailable == 2){
+      hall.isAvailable1 = 0;
+      hall.isAvailable2 = 1;
+    } else if(hall.isAvailable == 1){
+      hall.isAvailable1 = 1;
+      hall.isAvailable2 = 0;
+    } else {
+      hall.isAvailable1 = 0;
+      hall.isAvailable2 = 0;
+    }
+
     if (hall.hall_id) {
       // Update existing hall
       this.http.put(`${this.backendUrl}/halls/${hall.hall_id}`, hall).subscribe(
