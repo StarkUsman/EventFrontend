@@ -38,6 +38,7 @@ table {
     margin: auto;
     table-layout: auto;
     max-width: 100%;
+    color: #2C1775;
 }
 th:nth-child(5), td:nth-child(5) { 
     width: 180px; /* Adjust as needed */
@@ -49,7 +50,97 @@ th:nth-child(5), td:nth-child(5) {
     margin-bottom: 20px;
 }
 
-.bg-dark-gray {
-    background-color: #055398;
+.clr{
+    color: #2C1775;
+}
+
+.clr1{
+    color: #2C1775;
+    font-weight: 600;
+}
+
+/* .table .thead-light {
+    background: linear-gradient(90deg, #DBEAFF, #DCD8FF);
+
+} */
+
+/* .cllr{
+    background: linear-gradient(90deg, #DBEAFF, #DCD8FF);
+
+} */
+
+/* thead.thead-light {
+    background: linear-gradient(90deg, #DBEAFF, #DCD8FF) !important;
+} */
+
+.custom-thead th {
+    background-color: #DBEAFF;
+    /* color: black !important; */
+}
+
+.btn1{
+    background-color: #EFEFEF;
+}
+
+
+
+.btnE{
+    color: #28084B;
+    background-color: #dddfe1;
+    /* border-color: #0062cc; */
+    border-radius: 5px;
+    border-color: transparent;
+    padding-left: 8px;
+    padding-right: 8px;
+}
+.btnE:hover{
+    color: #7539FF;
+    background-color: #dddfe1;
+    /* border-color: #0062cc; */
+    border-radius: 5px;
+    border-color: transparent;
+    padding-left: 8px;
+    padding-right: 8px;
+}
+.btnD{
+    color: #28084B;
+    background-color: #dddfe1;
+    /* border-color: #0062cc; */
+    border-radius: 5px;
+    border-color: transparent;
+    padding-left: 5px;
+    padding-right: 5px;
+}
+
+.btnD:hover{
+    color: #c62020;
+    background-color: #dddfe1;
+    /* border-color: #0062cc; */
+    /* border: none; */
+    padding-left: 5px;
+    padding-right: 5px;
+    border-radius: 5px;
+}
+
+.hall{
+    background-color: #7539FF !important;
     color: white;
-  }
+    float: right;
+    padding-left: 13px;
+    padding-right: 13px;
+    padding-top: 5px;
+    padding-bottom: 6px;
+    border-radius: 10px;
+    border: transparent;
+    margin-top: 30px;
+
+    margin-bottom: 50px !important;
+    border: 1px solid #7539FF;
+    margin-right: 20px;
+}
+
+.hall:hover{
+    background-color: white !important;
+    color: #7539FF;
+    border: 1px solid #7539FF;
+}
