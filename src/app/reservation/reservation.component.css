@@ -72,9 +72,24 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-weight: bold;
+  font-weight: normal;
   font-size: 18px;
   background: #007bff;
+  color: white;
+  border-radius: 50%;
+  text-align: center;
+  margin-left: 30px;
+}
+
+.date-circle-selected {
+  width: 50px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 18px;
+  background: #ff0000;
   color: white;
   border-radius: 50%;
   text-align: center;
@@ -215,6 +230,11 @@ h3 {
     border-bottom-left-radius: 0;
     border-radius: 8px;
 
+}
+
+.menu-head{
+  display: flex;
+  justify-content: space-between;
 }
 
 .reservation-container {

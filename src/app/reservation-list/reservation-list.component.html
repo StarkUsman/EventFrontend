@@ -12,7 +12,7 @@
                             <tr>
                                 <th>ID</th>
                                 <th>Booking Name</th>
-                                <th>Booker Name</th>
+                                <th>Booking Type</th>
                                 <th>Date</th>
                                 <th>Hall</th>
                                 <th>Persons</th>
@@ -25,7 +25,7 @@
                             <tr *ngFor="let reservation of reservations let i = index">
                                 <td>{{ i+1 }}</td>
                                 <td>{{ reservation.booking_name }}</td>
-                                <td>{{ reservation.booker_name }}</td>
+                                <td>{{ reservation.booking_type }}</td>
                                 <td>{{ reservation.slot_day }}</td>
                                 <td>{{ reservation.slot_type }}</td>
                                 <td>{{ reservation.number_of_persons }}</td>

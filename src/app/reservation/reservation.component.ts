@@ -20,7 +20,7 @@ export class ReservationComponent implements OnInit {
   slotTypes: string[] = [];
   reservation: any = {
     reservation_name: '',
-    reserver_name: '',
+    booking_type: '',
     description: '',
     date: '',
     selected_slot: null,
@@ -37,6 +37,7 @@ export class ReservationComponent implements OnInit {
   additionalServicesSelected: any[] = [];
   bookings: any[] = [];
   totalAdditionalPrice: number = 0;
+  events: any[] = [];
 
   constructor(private http: HttpClient, private router: Router) { }
 
@@ -45,6 +46,7 @@ export class ReservationComponent implements OnInit {
     this.loadMenus();
     this.loadAdditionalServices();
     this.loadReservations();
+    this.loadEvents();
   }
 
   cancelReservation(){
@@ -124,6 +126,13 @@ export class ReservationComponent implements OnInit {
     });
   }
 
+  loadEvents() {
+    // Fetch events from API (replace with your real endpoint)
+    this.http.get<any[]>(`${this.backendUrl}/events`).subscribe(data => {
+      this.events = data;
+    });
+  }
+
   nextStage() {
     if (this.stage === 1 && this.isStage1Valid()) {
       this.initDays(this.reservation.date);
@@ -147,7 +156,7 @@ export class ReservationComponent implements OnInit {
   }
 
   isStage1Valid(): boolean {
-    return this.reservation.reservation_name && this.reservation.reserver_name && this.reservation.description && this.reservation.date;
+    return this.reservation.reservation_name && this.reservation.booking_type && this.reservation.date;
   }
 
   isStage2Valid(): boolean {
@@ -161,7 +170,7 @@ export class ReservationComponent implements OnInit {
 
   saveReservation() {
     let booking_name = this.reservation.reservation_name;
-    let booker_name = this.reservation.reserver_name;
+    let booking_type = this.reservation.booking_type;
     let description = this.reservation.description;
     let date = this.reservation.selected_slot.day;
 
@@ -187,7 +196,7 @@ export class ReservationComponent implements OnInit {
 
     let booking = {
       booking_name: booking_name,
-      booker_name: booker_name,
+      booking_type: booking_type,
       description: description,
       date: date,
       slot_day: slot_day,

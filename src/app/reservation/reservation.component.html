@@ -7,14 +7,19 @@
     </div>
     <form>
       <div class="mb-3">
-        <label for="reservationName" class="form-label">Reservation Name</label>
+        <label for="reservationName" class="form-label">Reservation Name <span style="color: red;">*</span></label>
         <input type="text" id="reservationName" class="form-control"
           [(ngModel)]="reservation.reservation_name" name="reservation_name">
       </div>
       <div class="mb-3">
-        <label for="reserverName" class="form-label">Reserver Name</label>
-        <input type="text" id="reserverName" class="form-control"
-          [(ngModel)]="reservation.reserver_name" name="reserver_name">
+        <label for="reserverName" class="form-label">Booking Type <span style="color: red;">*</span></label>
+        <!-- <input type="text" id="reserverName" class="form-control"
+        [(ngModel)]="reservation.booking_type" name="booking_type"> -->
+        <select class="form-control" *ngIf="events" [(ngModel)]="reservation.booking_type" name="booking_type" id="booking_type">
+          <option *ngFor="let event of events" [value]="event.event_name">
+            {{ event.event_name }}
+          </option>
+        </select>
       </div>
       <div class="mb-3">
         <label for="description" class="form-label">Description</label>
@@ -22,7 +27,7 @@
           [(ngModel)]="reservation.description" name="description">
       </div>
       <div class="mb-3 position-relative">
-        <label for="date" class="form-label">Date</label>
+        <label for="date" class="form-label">Date <span style="color: red;">*</span></label>
         <div class="input-group">
           <span class="input-group-text bg-light border-0">
             <i class="bi bi-calendar-event text-primary"></i>
@@ -57,7 +62,10 @@
       <div class="days">
         <div *ngFor="let day of days; let i = index" class="day"
           style="border: 1px solid #ddd; padding: 10px; margin-bottom: 10px; border-radius: 5px;">
-          <div class="date-circle">
+          <div *ngIf="!(i==3)" class="date-circle">
+            <p class="date-day">{{ days_cal[i] }}</p>
+          </div>          
+          <div *ngIf="(i==3)" class="date-circle-selected">
             <p class="date-day">{{ days_cal[i] }}</p>
           </div>          
           <div class="events"
@@ -177,11 +185,18 @@
     <div *ngIf="reservation.selectedMenu">
       <div class="card mb-3">
         <div class="card-body">
-          <h5 class="card-title">{{ reservation.selectedMenu.menu_name }}</h5>
-          <p><strong>Price:</strong> {{ reservation.selectedMenu.menu_price |
-            currency }}</p>
-
-          <!-- Display selected menu items in a grid -->
+          <div class="menu-head">
+            <div>
+              <h5 class="card-title">{{ reservation.selectedMenu.menu_name }}</h5>
+              <p><strong>Price:</strong> {{ reservation.selectedMenu.menu_price |
+                currency }}</p>
+            </div>
+            <div>
+              <h5 class="card-title">Total Menu Price: {{reservation.selectedMenu.finalPrice}}</h5>
+            </div>
+          </div>
+            
+            <!-- Display selected menu items in a grid -->
           <div class="menu-items-gallery">
             <div *ngFor="let item of menuItems" class="menu-item-card">
               <div class="menu-item-details">
