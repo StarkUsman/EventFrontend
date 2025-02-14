@@ -20,6 +20,8 @@ export class ReservationComponent implements OnInit {
   slotTypes: string[] = [];
   reservation: any = {
     reservation_name: '',
+    contact_number: '',
+    alt_contact_number: '',
     booking_type: '',
     description: '',
     date: '',
@@ -156,7 +158,7 @@ export class ReservationComponent implements OnInit {
   }
 
   isStage1Valid(): boolean {
-    return this.reservation.reservation_name && this.reservation.booking_type && this.reservation.date;
+    return this.reservation.reservation_name && this.reservation.contact_number && this.reservation.booking_type && this.reservation.date;
   }
 
   isStage2Valid(): boolean {
@@ -170,6 +172,8 @@ export class ReservationComponent implements OnInit {
 
   saveReservation() {
     let booking_name = this.reservation.reservation_name;
+    let contact_number = this.reservation.contact_number;
+    let alt_contact_number = this.reservation.alt_contact_number;
     let booking_type = this.reservation.booking_type;
     let description = this.reservation.description;
     let date = this.reservation.selected_slot.day;
@@ -196,6 +200,8 @@ export class ReservationComponent implements OnInit {
 
     let booking = {
       booking_name: booking_name,
+      contact_number: contact_number,
+      alt_contact_number: alt_contact_number,
       booking_type: booking_type,
       description: description,
       date: date,
@@ -208,11 +214,15 @@ export class ReservationComponent implements OnInit {
       // selected_menu_items_ids: selected_menu_items_ids
     };
 
-    this.http.post(`${this.backendUrl}/bookings`, booking).subscribe(() => {
-      alert('Reservation saved!');
-
-      this.router.navigate(['/reservationList']);
-    });
+    try{
+      this.http.post(`${this.backendUrl}/bookings`, booking).subscribe(() => {
+        alert('Reservation saved!');
+  
+        this.router.navigate(['/reservationList']);
+      });
+    } catch(error){
+      console.log(error);
+    }
   }
 
   selectSlot(slot: any) {

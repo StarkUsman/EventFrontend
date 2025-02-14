@@ -12,6 +12,7 @@
                             <tr>
                                 <th>ID</th>
                                 <th>Booking Name</th>
+                                <th>Contact Number</th>
                                 <th>Booking Type</th>
                                 <th>Date</th>
                                 <th>Hall</th>
@@ -25,6 +26,7 @@
                             <tr *ngFor="let reservation of reservations let i = index">
                                 <td>{{ i+1 }}</td>
                                 <td>{{ reservation.booking_name }}</td>
+                                <td>{{ reservation.contact_number }}</td>
                                 <td>{{ reservation.booking_type }}</td>
                                 <td>{{ reservation.slot_day }}</td>
                                 <td>{{ reservation.slot_type }}</td>
