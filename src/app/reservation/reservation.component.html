@@ -12,6 +12,16 @@
           [(ngModel)]="reservation.reservation_name" name="reservation_name">
       </div>
       <div class="mb-3">
+        <label for=" contactNumber" class="form-label">Contact Number <span style="color: red;">*</span></label>
+        <input type="text" id="contactNumber" class="form-control"
+          [(ngModel)]="reservation.contact_number" name="contact_number">
+      </div>
+      <div class="mb-3">
+        <label for="alt_contact_number" class="form-label">Alternate Contact Number</label>
+        <input type="text" id="alt_contact_number" class="form-control"
+          [(ngModel)]="reservation.alt_contact_number" name="alt_contact_number">
+      </div>
+      <div class="mb-3">
         <label for="reserverName" class="form-label">Booking Type <span style="color: red;">*</span></label>
         <!-- <input type="text" id="reserverName" class="form-control"
         [(ngModel)]="reservation.booking_type" name="booking_type"> -->
